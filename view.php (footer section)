@@ -1,0 +1,7 @@
+<footer class="mt-4 text-center text-muted">
+    <p>
+        <?php echo Config::SITE_NAME; ?> - Secure Pastes
+        <br>
+        <small>Version <?php echo Config::VERSION; ?></small>
+    </p>
+</footer> 

@@ -1,0 +1,384 @@
+/* Basic Reset - Productivity App Style */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #F9FAFC;
+    --secondary-color: #0C0E15;
+    --accent-color: #4645CF;
+    --accent-light: #B0B2E7;
+    --text-color: #0C0E15;
+    --text-secondary: #5D5D66;
+    --text-muted: #A5A6A8;
+    --border-color: #E8E9EC;
+    --card-bg: #FFFFFF;
+    --card-header-bg: #F9FAFC;
+    --input-bg: #FFFFFF;
+    --input-border: #E8E9EC;
+    --btn-primary-bg: #4645CF;
+    --btn-primary-hover: #3534B0;
+    --danger-color: #E94560;
+    --warning-color: #905C46;
+    --success-color: #40373A;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    margin-bottom: 30px;
+}
+
+.navbar {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+    color: var(--text-color) !important;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Navbar adjustments for dark theme */
+.navbar-dark {
+    background-color: var(--card-bg);
+}
+
+.navbar-dark .navbar-brand {
+    color: var(--text-color) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--text-secondary);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: var(--accent-color);
+}
+
+.navbar-dark .navbar-toggler {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Main Content */
+main {
+    padding-bottom: 40px;
+}
+
+/* Card Styling */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: var(--card-header-bg);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 15px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-footer {
+    background-color: var(--card-header-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 15px 20px;
+}
+
+/* Form Elements */
+.form-control, .form-select {
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg);
+    border-color: var(--accent-color);
+    color: var(--text-color);
+    box-shadow: 0 0 0 0.25rem rgba(70, 69, 207, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+textarea#pasteContent {
+    min-height: 300px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    resize: vertical;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-bg);
+    color: white;
+    padding: 10px 20px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--btn-primary-hover);
+    border-color: var(--btn-primary-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(70, 69, 207, 0.3);
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover, 
+.btn-outline-secondary.active {
+    background-color: var(--accent-light);
+    border-color: var(--accent-light);
+    color: var(--accent-color);
+}
+
+/* Alerts */
+.alert-danger {
+    background-color: rgba(233, 69, 96, 0.1);
+    border-color: rgba(233, 69, 96, 0.2);
+    color: var(--danger-color);
+    border-radius: 8px;
+}
+
+.alert-warning {
+    background-color: rgba(144, 92, 70, 0.1);
+    border-color: rgba(144, 92, 70, 0.2);
+    color: var(--warning-color);
+    border-radius: 8px;
+}
+
+/* Form Check */
+.form-check-input {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.form-check-label {
+    color: var(--text-secondary);
+    padding-left: 8px;
+    font-weight: 500;
+}
+
+/* Footer */
+footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+/* View Page Specific */
+.input-group-text {
+    background-color: var(--card-header-bg);
+    border-color: var(--input-border);
+    color: var(--text-secondary);
+    border-radius: 8px 0 0 8px;
+}
+
+.form-text {
+    color: var(--text-muted);
+}
+
+.card.bg-light {
+    background-color: var(--card-header-bg) !important;
+}
+
+.list-unstyled li {
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+}
+
+/* Pre and code blocks */
+pre {
+    background-color: var(--card-header-bg);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 15px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    border: 1px solid var(--border-color);
+}
+
+/* Copy instruction styles */
+.copy-instructions {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.copy-instructions kbd {
+    background-color: var(--card-header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    padding: 2px 5px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .card-header, .card-body, .card-footer {
+        padding: 15px;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    #copyLinkButton {
+        padding: 0.6rem 0.8rem;
+        min-width: 44px; /* Minimum touch target size */
+    }
+    
+    .input-group .form-control {
+        font-size: 16px; /* Prevent iOS zoom on focus */
+        padding: 0.7rem 0.8rem;
+    }
+    
+    /* Improve touch targets */
+    .btn {
+        min-height: 44px;
+        padding: 0.6rem 1rem;
+    }
+    
+    /* Improve readability on mobile */
+    body {
+        font-size: 16px;
+    }
+    
+    /* Ensure content doesn't overflow on small screens */
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 14px;
+        max-height: 70vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Improve spacing for mobile */
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Make form elements more touch-friendly */
+    .form-control, .form-select {
+        height: 44px;
+        font-size: 16px;
+    }
+    
+    /* Improve list readability */
+    ul li {
+        margin-bottom: 12px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Icons */
+.bi {
+    margin-right: 5px;
+}
+
+/* Enhanced Burn After Reading checkbox - matching accent color */
+.form-check:has(#burnAfterReading) {
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 10px 15px;
+    background-color: rgba(70, 69, 207, 0.05);
+    transition: all 0.3s ease;
+}
+
+.form-check:has(#burnAfterReading):hover {
+    background-color: rgba(70, 69, 207, 0.1);
+    box-shadow: 0 2px 8px rgba(70, 69, 207, 0.2);
+}
+
+.form-check:has(#burnAfterReading) .form-check-label {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.form-check:has(#burnAfterReading) .form-check-input {
+    border-color: var(--accent-color);
+}
+
+.form-check:has(#burnAfterReading) .form-check-input:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.form-check:has(#burnAfterReading) .bi-fire {
+    color: var(--accent-color);
+} 

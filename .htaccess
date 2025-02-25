@@ -1,0 +1,50 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Update RewriteBase to match your application's URL path
+    RewriteBase /
+    
+    # Redirect to view.php for paste IDs (16 characters)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([a-zA-Z0-9]{16})$ view.php?id=$1 [L,QSA]
+    
+    # Prevent direct access to lib directory
+    RewriteRule ^lib/ - [F,L]
+    
+    # Prevent access to setup.php after installation
+    # Uncomment this line after setup is complete
+    # RewriteRule ^setup\.php$ - [F,L]
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# PHP 8.3 specific settings
+<IfModule mod_php.c>
+    php_flag display_errors off
+    php_value max_execution_time 60
+    php_value memory_limit 256M
+    php_value post_max_size 16M
+    php_value upload_max_filesize 8M
+    
+    # Security settings
+    php_flag session.cookie_httponly on
+    php_flag session.use_only_cookies on
+    php_flag session.cookie_secure on
+    php_value session.gc_maxlifetime 3600
+</IfModule>
+
+# Add proper MIME types
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+</IfModule>
+
+# Set security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net;"
+</IfModule> 

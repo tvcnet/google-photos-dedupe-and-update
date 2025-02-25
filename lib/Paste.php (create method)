@@ -1,0 +1,55 @@
+<?php
+
+class Paste {
+    public function create($pasteData) {
+        // Validate data
+        if (empty($pasteData['data'])) {
+            throw new Exception('Paste content cannot be empty');
+        }
+        
+        // Check size limit
+        if (strlen($pasteData['data']) > Config::MAX_PASTE_SIZE) {
+            throw new Exception('Paste exceeds maximum size limit of ' . Config::MAX_PASTE_SIZE . ' bytes');
+        }
+        
+        // Generate unique ID
+        $id = $this->generateId();
+        
+        // Set default values if not provided
+        $format = $pasteData['format'] ?? 'plaintext';
+        $expiration = isset($pasteData['expiration']) ? (int)$pasteData['expiration'] : Config::DEFAULT_EXPIRATION;
+        $burnAfterReading = isset($pasteData['burnafterreading']) ? (int)$pasteData['burnafterreading'] : 0;
+        $encrypted = 0; // Always set to unencrypted
+        
+        // Calculate expiration timestamp
+        $expiresAt = ($expiration > 0) ? time() + $expiration : 0;
+        
+        try {
+            // Get database connection
+            $db = Database::getInstance();
+            $conn = $db->getConnection();
+            
+            // Insert paste into database
+            $stmt = $conn->prepare("
+                INSERT INTO pastes (id, data, created, expires, burnafterreading, format, encrypted) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ");
+            
+            $now = time();
+            $stmt->execute([
+                $id,
+                $pasteData['data'],
+                $now,
+                $expiresAt,
+                $burnAfterReading,
+                $format,
+                $encrypted
+            ]);
+            
+            return $id;
+        } catch (PDOException $e) {
+            error_log('Database error in create: ' . $e->getMessage());
+            throw new Exception('Database error: ' . $e->getMessage());
+        }
+    }
+} 
