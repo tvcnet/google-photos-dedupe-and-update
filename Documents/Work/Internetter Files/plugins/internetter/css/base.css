@@ -1,0 +1,99 @@
+/* Shared base (light) styles for header, nav, and toggle */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(21, 57, 68, 0.08);
+  box-shadow: 0 6px 22px rgba(21, 57, 68, 0.08);
+  padding: 4px 0;
+}
+
+.nav-bar {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1 1 auto;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.brand-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #0e2d34;
+  line-height: 1;
+  margin-left: 260px;
+  margin-bottom: 10px;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-weight: 500;
+  color: rgba(21, 57, 68, 0.75);
+  margin-left: auto;
+}
+
+/* Ensure nav links are pill buttons without underlines */
+.nav-menu a,
+.nav-menu a:link,
+.nav-menu a:visited,
+.nav-menu a:hover,
+.nav-menu a:active,
+.nav-menu a:focus {
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  background: rgba(200, 240, 223, 0.5);
+  color: #0e2d34;
+  box-shadow: 0 10px 20px rgba(126, 203, 160, 0.25);
+}
+
+.mode-toggle {
+  border: 1px solid rgba(21, 57, 68, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  color: #0e2d34;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mode-toggle:hover {
+  background: rgba(21, 57, 68, 0.12);
+  box-shadow: 0 10px 20px rgba(21, 57, 68, 0.12);
+}
+
+.mode-toggle::before {
+  content: 'Mode';
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mode-toggle::after { content: "🌙"; }
+
