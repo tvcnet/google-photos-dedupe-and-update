@@ -1,0 +1,5 @@
+{
+  "name": "PluginScout",
+  "description": "A comprehensive WordPress plugin analyzer that replicates the functionality of PluginScore. It aggregates data from the WordPress repository and uses AI to generate a trust score, sentiment analysis, and security audit verdict.",
+  "requestFramePermissions": []
+}
