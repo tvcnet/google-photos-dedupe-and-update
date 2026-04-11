@@ -1,0 +1,4381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Greece April 2026</title>
+  <meta name="description" content="Luxury travel itinerary for Jim Walker and Joyce Walker's Greece trip in April and May 2026.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2306b6d4'/%3E%3Cstop offset='1' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%2306111e'/%3E%3Cpath d='M18 42L32 14L46 42H38L35.5 37H28.5L26 42H18Z' fill='url(%23g)'/%3E%3Ccircle cx='47' cy='18' r='5' fill='%23ffffff' fill-opacity='.9'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --nav-height: 4.5rem;
+      --bg: #06111e;
+      --bg-soft: #0b1c30;
+      --panel: rgba(255, 255, 255, 0.12);
+      --panel-strong: rgba(255, 255, 255, 0.16);
+      --line: rgba(255, 255, 255, 0.18);
+      --text: #f8fbff;
+      --text-soft: rgba(240, 248, 255, 0.8);
+      --text-muted: rgba(240, 248, 255, 0.58);
+      --deep-blue: #1a3a5c;
+      --royal-blue: #2563eb;
+      --turquoise: #06b6d4;
+      --gold: #f59e0b;
+      --coral: #ff7f6e;
+      --shadow: 0 28px 80px rgba(0, 9, 22, 0.32);
+      --radius-xl: 2rem;
+      --radius-lg: 1.4rem;
+      --radius-md: 1rem;
+      --content-width: min(1120px, calc(100% - 2rem));
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(6, 182, 212, 0.18), transparent 38%),
+        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.2), transparent 28%),
+        linear-gradient(180deg, #07111d 0%, #0b1830 48%, #081222 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 28%),
+        radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.1), transparent 20%);
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      width: var(--content-width);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .top-nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-height);
+      z-index: 1300;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      background: rgba(7, 17, 29, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .top-nav .container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 2.85rem;
+      height: 2.85rem;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: inherit;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .nav-toggle span,
+    .nav-toggle::before,
+    .nav-toggle::after {
+      content: "";
+      display: block;
+      width: 1rem;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .nav-toggle {
+      position: relative;
+    }
+
+    .nav-toggle span {
+      position: absolute;
+    }
+
+    .nav-toggle::before {
+      position: absolute;
+      transform: translateY(-0.35rem);
+    }
+
+    .nav-toggle::after {
+      position: absolute;
+      transform: translateY(0.35rem);
+    }
+
+    .top-nav.is-open .nav-toggle span {
+      opacity: 0;
+    }
+
+    .top-nav.is-open .nav-toggle::before {
+      transform: rotate(45deg);
+    }
+
+    .top-nav.is-open .nav-toggle::after {
+      transform: rotate(-45deg);
+    }
+
+    .brand {
+      font-family: "Playfair Display", serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      overflow-x: auto;
+      padding-bottom: 0.15rem;
+      scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-links a {
+      padding: 0.65rem 0.9rem;
+      border-radius: 999px;
+      color: var(--text-soft);
+      font-size: 0.88rem;
+      white-space: nowrap;
+      transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .nav-links a.active {
+      color: var(--text);
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(37, 99, 235, 0.22));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      padding-top: var(--nav-height);
+      overflow: clip;
+    }
+
+    .hero-media,
+    .section-media {
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      transform: translate3d(0, var(--shift, 0px), 0) scale(var(--scale, 1));
+      transition: transform 0.2s linear;
+      will-change: transform;
+    }
+
+    .hero-media {
+      --scale: 1.08;
+      filter: saturate(1.04) contrast(1.04);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(3, 10, 18, 0.35) 0%, rgba(4, 14, 27, 0.62) 44%, rgba(6, 17, 30, 0.92) 100%),
+        linear-gradient(120deg, rgba(7, 17, 29, 0.82) 8%, rgba(7, 17, 29, 0.35) 48%, rgba(7, 17, 29, 0.75) 100%);
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 18rem;
+      background: linear-gradient(180deg, transparent 0%, rgba(6, 17, 30, 0.96) 100%);
+      z-index: 0;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      min-height: calc(100svh - var(--nav-height));
+      display: flex;
+      align-items: flex-start;
+      padding: clamp(2.75rem, 5vw, 4.25rem) 0 clamp(4rem, 7vw, 6rem);
+    }
+
+    .hero-content {
+      max-width: 46rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.84rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.78);
+      margin-bottom: 1.2rem;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 2.25rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(6, 182, 212, 0.9), rgba(255, 255, 255, 0.25));
+    }
+
+    .hero h1,
+    .section-head h2,
+    .footer-head h2 {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      line-height: 0.96;
+      letter-spacing: -0.03em;
+    }
+
+    .hero h1 {
+      font-size: clamp(3.6rem, 10vw, 7.4rem);
+      max-width: 10ch;
+      text-wrap: balance;
+    }
+
+    .hero-subtitle {
+      margin: 1.35rem 0 0;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      line-height: 1.7;
+      color: var(--text-soft);
+      max-width: 40rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.8rem;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-soft);
+      font-size: 0.94rem;
+    }
+
+    .meta-pill strong {
+      color: var(--text);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      right: 1.6rem;
+      bottom: 1.9rem;
+      z-index: 1;
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: rgba(255, 255, 255, 0.56);
+      font-size: 0.72rem;
+      display: inline-flex;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .hero-scroll::before {
+      content: "";
+      width: 1px;
+      height: 4rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+    }
+
+    .content-section,
+    .footer-section {
+      position: relative;
+      padding: clamp(4.8rem, 8vw, 7rem) 0;
+      scroll-margin-top: calc(var(--nav-height) + 1rem);
+      overflow: clip;
+    }
+
+    .bridge-section {
+      position: relative;
+      margin-top: -7rem;
+      padding: 0 0 clamp(3.5rem, 6vw, 4.8rem);
+      z-index: 3;
+    }
+
+    .bridge-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(18rem, 0.9fr);
+      gap: 1.1rem;
+      align-items: stretch;
+    }
+
+    .bridge-content,
+    .bridge-media {
+      border-radius: 2rem;
+      overflow: hidden;
+      min-height: 20rem;
+      position: relative;
+    }
+
+    .bridge-content {
+      padding: 1.8rem;
+      display: grid;
+      gap: 1.35rem;
+      align-content: start;
+    }
+
+    .bridge-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .bridge-kicker::before {
+      content: "";
+      width: 1.8rem;
+      height: 1px;
+      background: linear-gradient(90deg, var(--royal-blue), transparent);
+    }
+
+    .bridge-content h2 {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      max-width: 14ch;
+    }
+
+    .bridge-content > p {
+      margin: 0;
+      max-width: 38rem;
+      color: var(--text-soft);
+      line-height: 1.8;
+    }
+
+    .bridge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .bridge-card {
+      padding: 1rem;
+      border-radius: 1.2rem;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .bridge-card strong {
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .bridge-card span {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .bridge-media {
+      min-height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .bridge-media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12, 74, 110, 0.12), rgba(12, 74, 110, 0.46)),
+        linear-gradient(140deg, rgba(255, 255, 255, 0.1), transparent 50%);
+    }
+
+    .bridge-media-copy {
+      position: absolute;
+      left: 1.3rem;
+      right: 1.3rem;
+      bottom: 1.3rem;
+      z-index: 1;
+      padding: 1rem 1.05rem;
+      border-radius: 1.2rem;
+      background: rgba(12, 74, 110, 0.38);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #f8fbff;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .bridge-media-copy strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(240, 248, 255, 0.74);
+    }
+
+    .bridge-media-copy p {
+      margin: 0;
+      line-height: 1.65;
+      color: rgba(248, 251, 255, 0.88);
+    }
+
+    .content-section.has-media .container,
+    .footer-section .container {
+      z-index: 1;
+    }
+
+    .content-section.has-media .section-media {
+      inset: 0;
+      opacity: 0.2;
+      --scale: 1.02;
+      filter: saturate(1.05);
+    }
+
+    .content-section.has-media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7, 17, 29, 0.78), rgba(7, 17, 29, 0.88));
+      z-index: 0;
+    }
+
+    .section-head {
+      max-width: 44rem;
+      margin-bottom: 2.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2.35rem, 5vw, 4.4rem);
+      margin-bottom: 0.9rem;
+      text-wrap: balance;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.8;
+      font-size: 1rem;
+      max-width: 38rem;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .section-tag::before {
+      content: "";
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--turquoise), var(--gold));
+      box-shadow: 0 0 1rem rgba(6, 182, 212, 0.6);
+    }
+
+    .timeline-shell {
+      position: relative;
+      padding-left: 1rem;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .timeline-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0.12rem;
+      width: 1px;
+      background: linear-gradient(180deg, rgba(6, 182, 212, 0.15), rgba(255, 255, 255, 0.34), rgba(245, 158, 11, 0.16));
+    }
+
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(5rem, 6.25rem) minmax(0, 1fr);
+      gap: 0.9rem;
+      align-items: start;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -0.88rem;
+      top: 1rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--turquoise), rgba(255, 255, 255, 0.95));
+      box-shadow: 0 0 0 0.35rem rgba(6, 182, 212, 0.12);
+    }
+
+    .timeline-date {
+      padding-top: 0.8rem;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.8rem;
+      line-height: 1.45;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .timeline-card {
+      padding: 1rem 1.1rem;
+      border-radius: 1.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 50%);
+      pointer-events: none;
+    }
+
+    .timeline-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .timeline-card p {
+      margin: 0.3rem 0 0;
+      color: var(--text-soft);
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .timeline-chip {
+      display: inline-flex;
+      margin-top: 0.7rem;
+      padding: 0.28rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .timeline-route {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .detail-stack {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .tour-shell {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .tour-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.8fr);
+      gap: 1rem;
+      align-items: stretch;
+      padding: 1rem;
+      border-radius: 1.8rem;
+    }
+
+    .tour-intro-copy,
+    .tour-intro-media {
+      border-radius: 1.8rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tour-intro-copy {
+      padding: 1.35rem 1.45rem;
+      display: grid;
+      gap: 0.85rem;
+      align-content: start;
+    }
+
+    .tour-intro-copy h3 {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(1.6rem, 3vw, 2.45rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      max-width: 16ch;
+    }
+
+    .tour-intro-copy p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.8;
+      max-width: 34rem;
+    }
+
+    .tour-intro-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .tour-intro-facts span {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 0.72rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: var(--text-soft);
+      font-size: 0.84rem;
+    }
+
+    .tour-intro-media {
+      min-height: 18rem;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .tour-intro-media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12, 74, 110, 0.16), rgba(12, 74, 110, 0.52)),
+        linear-gradient(140deg, rgba(255, 255, 255, 0.08), transparent 50%);
+    }
+
+    .tour-intro-note {
+      position: absolute;
+      left: 1.1rem;
+      right: 1.1rem;
+      bottom: 1.1rem;
+      padding: 0.95rem 1rem;
+      border-radius: 1.15rem;
+      background: rgba(12, 74, 110, 0.5);
+      color: #f8fbff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .tour-intro-note strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(240, 248, 255, 0.72);
+    }
+
+    .tour-intro-note p {
+      margin: 0;
+      line-height: 1.6;
+      font-size: 0.94rem;
+      color: rgba(248, 251, 255, 0.9);
+    }
+
+    .tour-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .tour-featured-card {
+      position: relative;
+      min-height: 26rem;
+      display: grid;
+      align-content: end;
+      background-size: cover;
+      background-position: center;
+      color: #f8fbff;
+      grid-column: 1 / -1;
+    }
+
+    .tour-featured-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12, 74, 110, 0.08), rgba(12, 74, 110, 0.38) 42%, rgba(12, 74, 110, 0.86) 100%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 40%);
+      pointer-events: none;
+    }
+
+    .tour-featured-card .detail-toggle {
+      position: relative;
+      z-index: 1;
+      min-height: 26rem;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 1.5rem;
+    }
+
+    .tour-featured-card .detail-badge {
+      align-self: flex-start;
+    }
+
+    .tour-featured-card .detail-badge,
+    .tour-featured-card .detail-label,
+    .tour-featured-card .detail-meta,
+    .tour-featured-card .tour-route-line,
+    .tour-featured-card .tour-highlight {
+      color: rgba(248, 251, 255, 0.9);
+    }
+
+    .tour-featured-card .detail-label {
+      font-size: 0.8rem;
+    }
+
+    .tour-featured-card h3 {
+      color: #fff;
+      font-size: clamp(1.55rem, 3vw, 2.2rem);
+      line-height: 1.05;
+      max-width: 15ch;
+    }
+
+    .tour-featured-card .detail-head {
+      gap: 0.65rem;
+      max-width: 28rem;
+    }
+
+    .tour-kicker {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .tour-highlight {
+      margin: 0;
+      line-height: 1.7;
+      font-size: 1rem;
+      color: var(--text-soft);
+    }
+
+    .tour-route-line {
+      display: block;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .tour-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 0.15rem;
+    }
+
+    .tour-facts span {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.42rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 0.8rem;
+      color: inherit;
+    }
+
+    .tour-featured-card .detail-panel {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tour-featured-card .detail-panel-inner {
+      padding-top: 0;
+      color: #f8fbff;
+    }
+
+    .tour-featured-card .detail-block {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .tour-featured-card .detail-block h4,
+    .tour-featured-card .detail-block p,
+    .tour-featured-card .detail-block li {
+      color: rgba(248, 251, 255, 0.88);
+    }
+
+    .tour-support-card .detail-toggle {
+      padding: 1.1rem 1.2rem;
+    }
+
+    .tour-support-card .detail-head {
+      gap: 0.55rem;
+    }
+
+    .tour-support-card .detail-head h3 {
+      font-size: 1.08rem;
+    }
+
+    .tour-support-card .detail-meta {
+      display: none;
+    }
+
+    .tour-support-card .tour-highlight {
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+
+    .tour-support-card .tour-facts span {
+      background: rgba(255, 255, 255, 0.34);
+      border-color: rgba(255, 255, 255, 0.32);
+      color: var(--text-soft);
+    }
+
+    .hospitality-card {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.7)),
+        url("https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=600&q=70") center/cover;
+    }
+
+    .hospitality-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(186, 230, 253, 0.18));
+      pointer-events: none;
+    }
+
+    .hospitality-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    #outbound .detail-stack,
+    #return .detail-stack,
+    #insurance .detail-stack,
+    #athens-hotel .detail-stack {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #insurance .detail-stack {
+      grid-template-columns: minmax(0, 32rem);
+    }
+
+    #outbound .detail-card .detail-toggle,
+    #return .detail-card .detail-toggle,
+    #athens-hotel .detail-card .detail-toggle,
+    #insurance .detail-card .detail-toggle,
+    #intrepid .detail-card .detail-toggle {
+      padding: 1.05rem 1.15rem;
+    }
+
+    #outbound .detail-card .detail-head h3,
+    #return .detail-card .detail-head h3,
+    #athens-hotel .detail-card .detail-head h3,
+    #insurance .detail-card .detail-head h3,
+    #intrepid .detail-card .detail-head h3 {
+      font-size: 1.05rem;
+    }
+
+    .detail-card {
+      border-radius: 1.5rem;
+      overflow: hidden;
+      transition: transform 0.3s var(--ease-out), border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .detail-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .detail-card.is-open {
+      background: var(--panel-strong);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .detail-toggle {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.3rem 1.4rem;
+      cursor: pointer;
+    }
+
+    .detail-toggle:focus-visible {
+      outline: 2px solid rgba(6, 182, 212, 0.9);
+      outline-offset: -2px;
+    }
+
+    .detail-head {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .detail-label {
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .detail-head h3 {
+      margin: 0;
+      font-size: 1.18rem;
+      line-height: 1.35;
+    }
+
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.8rem;
+      color: var(--text-soft);
+      font-size: 0.94rem;
+    }
+
+    .detail-badge {
+      align-self: center;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .detail-badge::after {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .detail-card.is-open .detail-badge::after {
+      transform: rotate(-135deg) translateY(-1px);
+    }
+
+    .detail-panel {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.45s var(--ease-out), opacity 0.25s ease;
+    }
+
+    .detail-card.is-open .detail-panel {
+      opacity: 1;
+    }
+
+    .detail-panel-inner {
+      padding: 0 1.4rem 1.4rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .detail-panel-inner p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.8;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .detail-block {
+      padding: 1rem;
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .detail-block.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-block h4 {
+      margin: 0 0 0.55rem;
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .detail-block p,
+    .detail-block li {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.75;
+    }
+
+    .detail-block ul {
+      margin: 0;
+      padding-left: 1rem;
+      display: grid;
+      gap: 0.38rem;
+    }
+
+    .tour-day-summary {
+      margin: 0 0 1rem;
+      color: var(--text-soft);
+      line-height: 1.8;
+    }
+
+    .detail-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.65rem;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .detail-list li {
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .detail-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.6rem;
+      width: 0.35rem;
+      height: 0.35rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), var(--coral));
+    }
+
+    .detail-list a,
+    .support-links a,
+    .contact-link {
+      color: #c8f6ff;
+      border-bottom: 1px solid rgba(200, 246, 255, 0.4);
+      transition: color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .detail-list a:hover,
+    .support-links a:hover,
+    .contact-link:hover {
+      color: white;
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
+
+    .support-card {
+      padding: 1.3rem 1.4rem;
+      border-radius: 1.4rem;
+    }
+
+    .support-card h3 {
+      margin: 0 0 0.8rem;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .support-card p,
+    .support-card li {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.75;
+    }
+
+    .support-card ul {
+      margin: 0;
+      padding-left: 1rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .map-overview {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+      gap: 1.15rem;
+      align-items: end;
+      margin-bottom: 1.3rem;
+    }
+
+    .map-intro {
+      max-width: 38rem;
+    }
+
+    .map-overline {
+      margin: 0 0 0.7rem;
+      color: rgba(12, 74, 110, 0.68);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .map-intro h3 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.05;
+      color: var(--deep-blue);
+    }
+
+    .map-intro p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.75;
+      max-width: 34rem;
+    }
+
+    .route-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .route-summary-card,
+    .route-breakdown-card,
+    .map-note {
+      border-radius: 1.45rem;
+      padding: 1.2rem;
+    }
+
+    .route-summary-card h3,
+    .route-breakdown-card h3,
+    .map-note h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.35;
+      color: var(--deep-blue);
+    }
+
+    .route-summary-card p,
+    .route-breakdown-card p,
+    .map-note p {
+      margin: 0.6rem 0 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+
+    .route-summary-label,
+    .route-breakdown-label,
+    .map-note-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.72rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(12, 74, 110, 0.72);
+      font-weight: 700;
+    }
+
+    .route-summary-label::before,
+    .route-breakdown-label::before,
+    .map-note-label::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--royal-blue), var(--turquoise));
+      box-shadow: 0 0 1rem rgba(14, 165, 233, 0.18);
+    }
+
+    .route-summary-card[data-route-kind="flight-route"] .route-summary-label::before,
+    .route-breakdown-card[data-route-kind="flight-route"] .route-breakdown-label::before {
+      background: linear-gradient(135deg, #0369a1, #7dd3fc);
+    }
+
+    .route-summary-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+    }
+
+    .route-summary-meta span {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.48rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.46);
+      border: 1px solid rgba(255, 255, 255, 0.44);
+      color: rgba(12, 74, 110, 0.74);
+      font-size: 0.77rem;
+      font-weight: 600;
+    }
+
+    .map-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.82fr);
+      gap: 1.15rem;
+      align-items: start;
+    }
+
+    .map-stack {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .map-shell {
+      border-radius: 1.75rem;
+      overflow: hidden;
+      position: relative;
+      min-height: 30rem;
+    }
+
+    .map-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 45%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    #trip-map {
+      position: relative;
+      z-index: 1;
+      height: 30rem;
+      width: 100%;
+      background:
+        radial-gradient(circle at 18% 24%, rgba(56, 189, 248, 0.22), transparent 18rem),
+        radial-gradient(circle at 84% 78%, rgba(245, 158, 11, 0.14), transparent 18rem),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(224, 242, 254, 0.92)),
+        linear-gradient(rgba(14, 165, 233, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.055) 1px, transparent 1px);
+      background-size: auto, auto, auto, 3.2rem 3.2rem, 3.2rem 3.2rem;
+    }
+
+    .map-caption {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .map-caption span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.88rem;
+    }
+
+    .map-caption span::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--turquoise), var(--gold));
+    }
+
+    .map-caption span.tour-route::before {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    }
+
+    .map-caption span.flight-route::before {
+      background: linear-gradient(135deg, #0369a1, #7dd3fc);
+    }
+
+    .map-caption span.marker-route::before {
+      background: linear-gradient(135deg, #0c4a6e, #38bdf8);
+    }
+
+    .map-aside,
+    .route-breakdown {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .route-stop-list {
+      list-style: none;
+      margin: 0.95rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .route-stop-list li {
+      display: grid;
+      grid-template-columns: minmax(4.2rem, 4.8rem) minmax(0, 1fr);
+      gap: 0.75rem;
+      align-items: start;
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(12, 74, 110, 0.08);
+    }
+
+    .route-stop-list li:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .route-stop-list time {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.46);
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      color: rgba(12, 74, 110, 0.7);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .route-stop-list strong {
+      display: block;
+      color: var(--deep-blue);
+      font-size: 0.96rem;
+      line-height: 1.35;
+    }
+
+    .route-stop-list p {
+      margin: 0.18rem 0 0;
+      color: var(--text-soft);
+      line-height: 1.65;
+      font-size: 0.89rem;
+    }
+
+    .weather-grid,
+    .packing-grid,
+    .emergency-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .weather-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .weather-card,
+    .checklist-card,
+    .journal-card,
+    .emergency-card {
+      border-radius: 1.55rem;
+      padding: 1.4rem;
+    }
+
+    .weather-card {
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .weather-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .weather-top h3 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .weather-top p {
+      margin: 0.3rem 0 0;
+      color: var(--text-soft);
+    }
+
+    .weather-icon {
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: 1.3rem;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(160deg, rgba(245, 158, 11, 0.18), rgba(6, 182, 212, 0.18));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .weather-statline {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .weather-statline span {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      color: var(--text-soft);
+      font-size: 0.88rem;
+    }
+
+    .packing-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .checklist-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .checklist-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .checklist-head h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .progress-meta {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+    }
+
+    .progress-track {
+      height: 0.55rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--turquoise), var(--gold));
+      transition: width 0.3s ease;
+    }
+
+    .checklist-items {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .checklist-item input {
+      width: 1.1rem;
+      height: 1.1rem;
+      accent-color: var(--gold);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .checklist-item span.done {
+      color: rgba(255, 255, 255, 0.48);
+      text-decoration: line-through;
+    }
+
+    .journal-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .journal-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem 1rem;
+      align-items: center;
+    }
+
+    .journal-head h3 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .journal-head p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+      max-width: 38rem;
+    }
+
+    .save-indicator {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      min-width: 4.5rem;
+      text-align: right;
+    }
+
+    .journal-card textarea {
+      width: 100%;
+      min-height: 16rem;
+      resize: vertical;
+      padding: 1.2rem 1.1rem;
+      border-radius: 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    .journal-card textarea::placeholder {
+      color: rgba(255, 255, 255, 0.44);
+    }
+
+    .journal-card textarea:focus-visible {
+      outline: 2px solid rgba(6, 182, 212, 0.9);
+      outline-offset: 2px;
+    }
+
+    .footer-section {
+      background:
+        linear-gradient(180deg, rgba(6, 17, 30, 0.2), rgba(6, 17, 30, 0.82)),
+        linear-gradient(135deg, rgba(26, 58, 92, 0.92), rgba(11, 28, 48, 0.96));
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .footer-head {
+      max-width: 40rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .footer-head h2 {
+      font-size: clamp(2.1rem, 4vw, 3.5rem);
+      margin-bottom: 0.9rem;
+    }
+
+    .footer-head p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.8;
+    }
+
+    .emergency-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .emergency-card h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .emergency-card p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.8;
+    }
+
+    .emergency-card strong {
+      color: var(--text);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translate3d(0, 2rem, 0);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+      will-change: opacity, transform;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .leaflet-container {
+      position: relative;
+      overflow: hidden;
+      outline: 0;
+      font: 12px/1.5 "Inter", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.15), transparent 32%),
+        radial-gradient(circle at 70% 35%, rgba(245, 158, 11, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(12, 25, 42, 0.94), rgba(7, 16, 28, 0.98)),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 84px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 84px);
+    }
+
+    .leaflet-pane,
+    .leaflet-control,
+    .leaflet-bottom,
+    .leaflet-top,
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow,
+    .leaflet-pane > svg,
+    .leaflet-pane > canvas,
+    .leaflet-zoom-box,
+    .leaflet-image-layer,
+    .leaflet-layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .leaflet-pane {
+      z-index: 400;
+    }
+
+    .leaflet-tile-pane {
+      z-index: 200;
+    }
+
+    .leaflet-overlay-pane {
+      z-index: 400;
+    }
+
+    .leaflet-shadow-pane {
+      z-index: 500;
+    }
+
+    .leaflet-marker-pane {
+      z-index: 600;
+    }
+
+    .leaflet-tooltip-pane {
+      z-index: 650;
+    }
+
+    .leaflet-popup-pane {
+      z-index: 700;
+    }
+
+    .leaflet-top,
+    .leaflet-bottom {
+      position: absolute;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .leaflet-top {
+      top: 0;
+    }
+
+    .leaflet-right {
+      right: 0;
+    }
+
+    .leaflet-left {
+      left: 0;
+    }
+
+    .leaflet-bottom {
+      bottom: 0;
+    }
+
+    .leaflet-control {
+      position: relative;
+      z-index: 800;
+      pointer-events: auto;
+    }
+
+    .leaflet-top .leaflet-control {
+      margin-top: 1rem;
+    }
+
+    .leaflet-right .leaflet-control {
+      margin-right: 1rem;
+    }
+
+    .leaflet-control-zoom {
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(7, 18, 35, 0.76);
+      box-shadow: 0 20px 50px rgba(0, 10, 24, 0.35);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .leaflet-control-zoom a {
+      display: grid;
+      place-items: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: transparent;
+      transition: background-color 0.2s ease;
+    }
+
+    .leaflet-control-zoom a:hover,
+    .leaflet-control-zoom a:focus-visible {
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+    }
+
+    .leaflet-control-zoom a + a {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .leaflet-div-icon {
+      background: transparent;
+      border: 0;
+    }
+
+    .route-pin {
+      width: 9rem;
+      height: 2.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      transform: translate(-0.4rem, -0.4rem);
+      pointer-events: none;
+    }
+
+    .route-pin i {
+      width: 0.9rem;
+      height: 0.9rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), var(--coral));
+      box-shadow: 0 0 0 0.28rem rgba(245, 158, 11, 0.12), 0 0 1.5rem rgba(245, 158, 11, 0.18);
+      flex: 0 0 auto;
+    }
+
+    .route-pin span {
+      padding: 0.5rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(7, 18, 35, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 12px 28px rgba(0, 9, 22, 0.32);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 1rem;
+      background: rgba(7, 18, 35, 0.9);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 16px 40px rgba(0, 9, 22, 0.34);
+    }
+
+    .leaflet-popup-content {
+      margin: 0;
+      padding: 0.95rem 1rem;
+      line-height: 1.7;
+      min-width: 12rem;
+    }
+
+    .leaflet-popup-tip {
+      background: rgba(7, 18, 35, 0.9);
+    }
+
+    .leaflet-tooltip {
+      background: rgba(7, 18, 35, 0.86);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      box-shadow: 0 14px 32px rgba(0, 9, 22, 0.3);
+      padding: 0.45rem 0.65rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .leaflet-tooltip:before {
+      border-top-color: rgba(7, 18, 35, 0.86);
+    }
+
+    /* TVCNet Social Toolkit theme alignment */
+    :root {
+      --bg: #e0f2fe;
+      --bg-soft: #bae6fd;
+      --panel: rgba(255, 255, 255, 0.55);
+      --panel-strong: rgba(255, 255, 255, 0.72);
+      --line: rgba(255, 255, 255, 0.35);
+      --text: #0c4a6e;
+      --text-soft: rgba(12, 74, 110, 0.82);
+      --text-muted: rgba(12, 74, 110, 0.62);
+      --deep-blue: #0c4a6e;
+      --royal-blue: #0ea5e9;
+      --turquoise: #38bdf8;
+      --gold: #7dd3fc;
+      --coral: #0284c7;
+      --shadow: 0 8px 32px rgba(12, 74, 110, 0.08);
+    }
+
+    body {
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.65), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(125, 211, 252, 0.42), transparent 24%),
+        linear-gradient(180deg, #e0f2fe 0%, #bae6fd 35%, #7dd3fc 70%, #38bdf8 100%);
+    }
+
+    body::before {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.26), transparent 28%),
+        radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.5), transparent 18%),
+        radial-gradient(circle at 78% 10%, rgba(14, 165, 233, 0.14), transparent 18%);
+      opacity: 0.95;
+      mix-blend-mode: normal;
+    }
+
+    .glass {
+      background: var(--panel);
+      border-color: var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .top-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.42);
+      box-shadow: 0 8px 32px rgba(12, 74, 110, 0.08);
+    }
+
+    .brand {
+      color: var(--deep-blue);
+    }
+
+    .nav-links a {
+      color: rgba(12, 74, 110, 0.76);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--deep-blue);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .nav-links a.active {
+      color: var(--deep-blue);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45), 0 8px 24px rgba(14, 165, 233, 0.12);
+    }
+
+    .hero {
+      --text: #f8fbff;
+      --text-soft: rgba(240, 248, 255, 0.84);
+      --text-muted: rgba(240, 248, 255, 0.66);
+    }
+
+    .hero::before {
+      background:
+        linear-gradient(180deg, rgba(12, 74, 110, 0.22) 0%, rgba(12, 74, 110, 0.42) 42%, rgba(12, 74, 110, 0.82) 100%),
+        linear-gradient(120deg, rgba(12, 74, 110, 0.7) 10%, rgba(12, 74, 110, 0.2) 52%, rgba(12, 74, 110, 0.64) 100%);
+    }
+
+    .hero::after {
+      background: linear-gradient(180deg, transparent 0%, rgba(224, 242, 254, 0.22) 22%, rgba(224, 242, 254, 0.88) 100%);
+    }
+
+    .hero .meta-pill {
+      box-shadow: 0 8px 32px rgba(12, 74, 110, 0.12);
+    }
+
+    .content-section.has-media .section-media {
+      opacity: 0.16;
+      filter: saturate(1.02);
+    }
+
+    .content-section.has-media::before {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(224, 242, 254, 0.82));
+    }
+
+    .section-tag,
+    .meta-pill,
+    .timeline-chip,
+    .detail-badge,
+    .map-caption span,
+    .weather-statline span {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: var(--text-soft);
+    }
+
+    .section-tag {
+      color: rgba(12, 74, 110, 0.72);
+    }
+
+    .section-tag::before,
+    .timeline-item::before,
+    .map-caption span::before {
+      background: linear-gradient(135deg, var(--royal-blue), var(--turquoise));
+      box-shadow: 0 0 1rem rgba(14, 165, 233, 0.2);
+    }
+
+    .timeline-shell::before {
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.18), rgba(14, 165, 233, 0.4), rgba(12, 74, 110, 0.14));
+    }
+
+    .timeline-date,
+    .timeline-chip {
+      color: rgba(12, 74, 110, 0.72);
+    }
+
+    .timeline-card::before,
+    .map-shell::before {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 45%);
+    }
+
+    .detail-card:hover {
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .detail-card.is-open {
+      background: rgba(255, 255, 255, 0.72);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .detail-toggle:focus-visible,
+    .journal-card textarea:focus-visible {
+      outline-color: #0ea5e9;
+    }
+
+    .detail-list a,
+    .support-links a,
+    .contact-link {
+      color: #0369a1;
+      border-bottom-color: rgba(3, 105, 161, 0.28);
+    }
+
+    .detail-list a:hover,
+    .support-links a:hover,
+    .contact-link:hover {
+      color: #0c4a6e;
+      border-color: rgba(12, 74, 110, 0.5);
+    }
+
+    .support-card h3,
+    .emergency-card h3 {
+      color: rgba(12, 74, 110, 0.88);
+    }
+
+    .weather-icon {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.6), rgba(125, 211, 252, 0.24));
+      border-color: rgba(255, 255, 255, 0.42);
+    }
+
+    .progress-track {
+      background: rgba(12, 74, 110, 0.08);
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    }
+
+    .checklist-item input {
+      accent-color: #0ea5e9;
+    }
+
+    .checklist-item span.done {
+      color: rgba(12, 74, 110, 0.46);
+    }
+
+    .journal-card textarea {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: var(--text);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .journal-card textarea::placeholder {
+      color: rgba(12, 74, 110, 0.44);
+    }
+
+    .footer-section {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(186, 230, 253, 0.46)),
+        linear-gradient(180deg, rgba(224, 242, 254, 0.92), rgba(186, 230, 253, 0.94));
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .leaflet-container {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.16), transparent 32%),
+        radial-gradient(circle at 70% 35%, rgba(255, 255, 255, 0.52), transparent 30%),
+        linear-gradient(180deg, rgba(224, 242, 254, 0.94), rgba(186, 230, 253, 0.98)),
+        repeating-linear-gradient(90deg, rgba(12, 74, 110, 0.04), rgba(12, 74, 110, 0.04) 1px, transparent 1px, transparent 84px),
+        repeating-linear-gradient(0deg, rgba(12, 74, 110, 0.04), rgba(12, 74, 110, 0.04) 1px, transparent 1px, transparent 84px);
+    }
+
+    .leaflet-control-zoom {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 8px 24px rgba(12, 74, 110, 0.1);
+    }
+
+    .leaflet-control-zoom a:hover,
+    .leaflet-control-zoom a:focus-visible {
+      background: rgba(14, 165, 233, 0.08);
+    }
+
+    .leaflet-control-zoom a + a {
+      border-top-color: rgba(12, 74, 110, 0.08);
+    }
+
+    .route-pin i {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      box-shadow: 0 0 0 0.28rem rgba(14, 165, 233, 0.14), 0 0 1rem rgba(14, 165, 233, 0.16);
+    }
+
+    .route-pin span,
+    .leaflet-popup-content-wrapper,
+    .leaflet-tooltip {
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.45);
+      box-shadow: 0 8px 24px rgba(12, 74, 110, 0.12);
+    }
+
+    .leaflet-popup-tip,
+    .leaflet-tooltip:before {
+      background: rgba(255, 255, 255, 0.78);
+      border-top-color: rgba(255, 255, 255, 0.78);
+    }
+
+    @media (max-width: 980px) {
+      .bridge-shell,
+      .tour-intro,
+      .tour-cards-grid,
+      .weather-grid,
+      .packing-grid,
+      .emergency-grid,
+      .support-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #outbound .detail-stack,
+      #return .detail-stack,
+      #insurance .detail-stack,
+      #athens-hotel .detail-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .bridge-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --nav-height: 4.1rem;
+      }
+
+      .top-nav .container {
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .brand {
+        font-size: 1rem;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+        color: var(--deep-blue);
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 0.55rem);
+        left: 1rem;
+        right: 1rem;
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem;
+        padding: 0.8rem;
+        border-radius: 1.2rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        box-shadow: 0 16px 38px rgba(12, 74, 110, 0.16);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      .nav-links.is-open {
+        display: grid;
+      }
+
+      .nav-links a {
+        padding: 0.78rem 0.85rem;
+        font-size: 0.83rem;
+        text-align: center;
+      }
+
+      .hero-inner {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+      }
+
+      .hero h1 {
+        max-width: 7ch;
+      }
+
+      .hero-scroll {
+        display: none;
+      }
+
+      .bridge-section {
+        margin-top: -5rem;
+        padding-bottom: 2.8rem;
+      }
+
+      .bridge-content,
+      .bridge-media {
+        min-height: auto;
+      }
+
+      .tour-intro {
+        padding: 0.85rem;
+      }
+
+      .bridge-content {
+        padding: 1.3rem;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 0.55rem;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-date {
+        padding-top: 0;
+        font-size: 0.74rem;
+      }
+
+      .detail-toggle {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .tour-support-card .detail-toggle,
+      #outbound .detail-card .detail-toggle,
+      #return .detail-card .detail-toggle,
+      #insurance .detail-card .detail-toggle,
+      #athens-hotel .detail-card .detail-toggle,
+      #intrepid .detail-card .detail-toggle {
+        padding: 0.95rem 1rem;
+      }
+
+      .tour-featured-card,
+      .tour-featured-card .detail-toggle {
+        min-height: 22rem;
+      }
+
+      .tour-featured-card .detail-toggle {
+        padding: 1rem;
+      }
+
+      .tour-facts {
+        gap: 0.4rem;
+      }
+
+      .tour-facts span {
+        font-size: 0.76rem;
+      }
+
+      .content-section,
+      .footer-section {
+        padding: 3.7rem 0;
+      }
+
+      #trip-map,
+      .map-shell {
+        min-height: 19rem;
+        height: 19rem;
+      }
+
+      .route-pin {
+        width: auto;
+        height: auto;
+        transform: translate(-0.1rem, -0.1rem);
+      }
+
+      .route-pin span {
+        display: none;
+      }
+
+      .route-pin i {
+        width: 0.75rem;
+        height: 0.75rem;
+      }
+
+      .checklist-item {
+        padding: 0.2rem 0;
+      }
+
+      .checklist-item input {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .hero-media,
+      .section-media {
+        transform: none !important;
+      }
+    }
+
+    /* ── Photo Gallery ─────────────────────────────────────── */
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+      gap: 1rem;
+    }
+
+    .photo-card {
+      border-radius: 1.4rem;
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .photo-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .photo-card-media {
+      height: 10rem;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .photo-card-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(6, 17, 30, 0.7));
+    }
+
+    .photo-card-body {
+      padding: 1rem 1.1rem 1.1rem;
+    }
+
+    .photo-card-body h3 {
+      margin: 0 0 0.3rem;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .photo-card-body p {
+      margin: 0 0 0.7rem;
+      font-size: 0.84rem;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .photo-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .photo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--turquoise);
+      text-decoration: none;
+      padding: 0.35rem 0.6rem;
+      border-radius: 0.6rem;
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .photo-link:hover {
+      background: rgba(6, 182, 212, 0.18);
+      color: #67e8f9;
+    }
+
+    .photo-link svg {
+      flex-shrink: 0;
+    }
+
+    .photos-note {
+      margin-top: 1.2rem;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .photos-note strong {
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 64rem) {
+      .photos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 40rem) {
+      .photos-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .photo-card-media {
+        height: 8rem;
+      }
+    }
+  
+    /* ====== DEPARTURE COUNTDOWN ====== */
+    .countdown-glass {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 1.2rem 1.6rem;
+      margin-top: 1.4rem;
+      display: inline-block;
+      animation: countdownPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes countdownPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(6, 182, 212, 0); }
+    }
+
+    .countdown-label {
+      font-family: "Inter", sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .countdown-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 4.2rem;
+    }
+
+    .countdown-value {
+      font-family: "Inter", sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--turquoise), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .countdown-value.flip {
+      transform: scale(1.12);
+    }
+
+    .countdown-suffix {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .countdown-sep {
+      font-family: "Inter", sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      opacity: 0.5;
+      animation: sepBlink 1s steps(1) infinite;
+      margin: 0 0.1rem;
+    }
+
+    @keyframes sepBlink {
+      0%, 50% { opacity: 0.5; }
+      51%, 100% { opacity: 0.15; }
+    }
+
+    /* ====== PACKING OVERALL PROGRESS ====== */
+    .packing-overall {
+      padding: 1.2rem 1.6rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+    }
+
+    .packing-overall-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.6rem;
+    }
+
+    .packing-overall-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .packing-overall-pct {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--turquoise), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .progress-track-lg {
+      height: 0.75rem;
+    }
+
+    .packing-overall-count {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.45rem;
+      text-align: right;
+    }
+
+</style>
+</head>
+<body>
+  <div class="page-shell">
+    <nav class="top-nav" aria-label="Section navigation">
+      <div class="container">
+        <a class="brand" href="#hero">Greece April 2026</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+          <a href="#hero">Overview</a>
+          <a href="#timeline">Timeline</a>
+          <a href="#tour">Tour</a>
+          <a href="#outbound">Outbound</a>
+          <a href="#intrepid">Intrepid</a>
+          <a href="#santorini">Santorini</a>
+          <a href="#athens-hotel">Athens Hotel</a>
+          <a href="#return">Return</a>
+          <a href="#insurance">Insurance</a>
+          <a href="#map">Map</a>
+          <a href="#weather">Weather</a>
+          <a href="#photos">Photos</a>
+          <a href="#packing">Packing</a>
+          <a href="#journal">Journal</a>
+          <a href="#emergency">Emergency</a>
+        </div>
+      </div>
+    </nav>
+
+    <header id="hero" class="hero" data-nav-section>
+      <div
+        class="hero-media"
+        data-parallax="0.14"
+        style="background-image: url('https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=1920&q=80');"
+        aria-hidden="true"
+      ></div>
+      <div class="container hero-inner">
+        <div class="hero-content reveal is-visible">
+          <h1>Greece April 2026</h1>
+          <p class="hero-subtitle">
+            Jim Walker and Joyce Walker depart on April 25 for an Athens arrival, an Intrepid journey through Greece, and a Santorini interlude before the return home on May 5.
+          </p>
+          <div class="hero-meta">
+            <span class="meta-pill"><strong>Travelers</strong> Jim & Joyce Walker</span>
+            <span class="meta-pill"><strong>Dates</strong> April 25 to May 5, 2026</span>
+            <span class="meta-pill"><strong>Highlight</strong> Santorini sunset side trip</span>
+          </div>
+          <div id="countdown" class="countdown-glass">
+            <span class="countdown-label">Departing In</span>
+            <div class="countdown-row">
+              <div class="countdown-unit">
+                <span class="countdown-value" id="cd-days">--</span>
+                <span class="countdown-suffix">Days</span>
+              </div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unit">
+                <span class="countdown-value" id="cd-hours">--</span>
+                <span class="countdown-suffix">Hours</span>
+              </div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unit">
+                <span class="countdown-value" id="cd-mins">--</span>
+                <span class="countdown-suffix">Mins</span>
+              </div>
+              <div class="countdown-sep">:</div>
+              <div class="countdown-unit">
+                <span class="countdown-value" id="cd-secs">--</span>
+                <span class="countdown-suffix">Secs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="hero-scroll" aria-hidden="true">Scroll</span>
+    </header>
+
+    <section class="bridge-section">
+      <div class="container">
+        <div class="bridge-shell">
+          <div class="bridge-content glass reveal">
+            <span class="bridge-kicker">Trip Overview</span>
+            <h2>From Athens through Meteora and Arcadia, then one final Santorini exhale.</h2>
+            <p>
+              The page now separates the story of the guided journey from the utility of bookings and logistics. Use the quick overview to orient, then move into the official Intrepid route for the deeper day-by-day flow.
+            </p>
+            <div class="bridge-grid">
+              <div class="bridge-card">
+                <strong>Mainland Route</strong>
+                <span>Athens, Kalambaka, Meteora, Delphi, Nafpaktos, Olympia, Dimitsana, Mycenae, Nafplion, Athens.</span>
+              </div>
+              <div class="bridge-card">
+                <strong>Signature Moments</strong>
+                <span>Acropolis guiding, Meteora at sunset, coffee at Prodromos Monastery, and a feature stay in Dimitsana.</span>
+              </div>
+              <div class="bridge-card">
+                <strong>Final Add-On</strong>
+                <span>The official tour ends into a separate Santorini overnight before the final Athens hotel reset and return flights.</span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bridge-media glass reveal"
+            style="background-image: url('https://images.unsplash.com/photo-1530143475502-78f8b58e9c4b?auto=format&fit=crop&w=600&q=70');"
+            aria-hidden="true"
+          >
+            <div class="bridge-media-copy">
+              <strong>Read It In Order</strong>
+              <p>The timeline is now a quick route rail. The Intrepid section below becomes the editorial centerpiece of the trip.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section
+        id="timeline"
+        class="content-section has-media"
+        data-nav-section
+      >
+        <div
+          class="section-media"
+          data-parallax="0.08"
+          style="background-image: url('https://images.unsplash.com/photo-1530143475502-78f8b58e9c4b?auto=format&fit=crop&w=1920&q=80');"
+          aria-hidden="true"
+        ></div>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Trip Flow</span>
+            <h2>The journey at a glance</h2>
+            <p>
+              A compact trip-flow rail to orient the dates, route shifts, and handoff into Santorini without repeating the full tour story twice.
+            </p>
+          </div>
+          <div id="timeline-list" class="timeline-shell reveal" aria-label="Trip timeline"></div>
+        </div>
+      </section>
+
+      <section
+        id="tour"
+        class="content-section"
+        data-nav-section
+      >
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Official Itinerary</span>
+            <h2>The 8-day Intrepid journey</h2>
+            <p>
+              This is the heart of the trip: the guided route across mainland Greece, recast as a more visual editorial sequence with featured days, cleaner day cards, and the practical details tucked inside each expansion.
+            </p>
+          </div>
+          <div class="tour-shell">
+            <div class="tour-intro reveal glass">
+              <div class="tour-intro-copy">
+                <span class="bridge-kicker">Tour Overview</span>
+                <h3>Across mainland Greece in eight guided days.</h3>
+                <p>
+                  Start in Athens, move north through Kalambaka and Meteora, cross through Delphi and the coast, settle into Dimitsana's mountain feature stay, and close through Mycenae and Nafplion before returning to Athens.
+                </p>
+                <div class="tour-intro-facts">
+                  <span>8 guided days</span>
+                  <span>Meteora, Delphi, Olympia, Arcadia</span>
+                  <span>Feature stay in Dimitsana</span>
+                </div>
+              </div>
+              <div
+                class="tour-intro-media"
+                style="background-image: url('https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=600&q=70');"
+                aria-hidden="true"
+              >
+                <div class="tour-intro-note">
+                  <strong>Route Character</strong>
+                  <p>Ancient sites, cliff monasteries, mountain villages, and a final coastal glide back into Athens.</p>
+                </div>
+              </div>
+            </div>
+            <div id="tour-cards" class="tour-cards-grid reveal"></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="outbound"
+        class="content-section has-media"
+        data-nav-section
+      >
+        <div
+          class="section-media"
+          data-parallax="0.06"
+          style="background-image: url('https://images.unsplash.com/photo-1478391679764-b2d8b3cd1e94?auto=format&fit=crop&w=1920&q=80');"
+          aria-hidden="true"
+        ></div>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">April 25</span>
+            <h2>Outbound flights</h2>
+            <p>
+              The departure routing is consolidated under confirmation <strong>AR01BG</strong> with a quick Chicago connection and customs stop in Munich before Athens.
+            </p>
+          </div>
+          <div id="outbound-cards" class="detail-stack reveal"></div>
+        </div>
+      </section>
+
+      <section id="intrepid" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Tour Logistics</span>
+            <h2>Intrepid Travel essentials</h2>
+            <p>
+              Booking details, joining-point hotel logistics, welcome-meeting notes, and Athens arrival support collected in one place.
+            </p>
+          </div>
+          <div class="support-grid">
+            <div id="intrepid-cards" class="detail-stack reveal"></div>
+            <div class="support-card glass reveal hospitality-card">
+              <h3>Joining point notes</h3>
+              <p>
+                Day 1 begins in Athens with a 6:00 PM welcome meeting and dinner after arrival at the Athenaeum joining point.
+              </p>
+              <ul>
+                <li>It is important to attend the welcome meeting because insurance details and next-of-kin information are collected then.</li>
+                <li>If plans change or arrival runs late, notify the travel agent or hotel reception and check the lobby for meeting information.</li>
+                <li>Taxi from Athens Airport to central Athens typically takes 30 to 45 minutes and costs about EUR 50 depending on time of day.</li>
+                <li>Metro line 3 to Syntagma, then line 2 toward Elliniko to Acropolis station, leaves the hotel roughly 450 meters away.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="santorini"
+        class="content-section has-media"
+        data-nav-section
+      >
+        <div
+          class="section-media"
+          data-parallax="0.08"
+          style="background-image: url('https://images.unsplash.com/photo-1570031223525-4b6db20b60e3?auto=format&fit=crop&w=1920&q=80');"
+          aria-hidden="true"
+        ></div>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">May 3 to 4</span>
+            <h2>Santorini side trip</h2>
+            <p>
+              A focused island detour with round-trip flights, Merovigliosso Apartments, and a Viator sunset experience anchored in Imerovigli.
+            </p>
+          </div>
+          <div id="santorini-cards" class="detail-stack reveal"></div>
+        </div>
+      </section>
+
+      <section id="athens-hotel" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">May 4 to 5</span>
+            <h2>Athens hotel reset</h2>
+            <p>
+              One final overnight near Athens before the return flights, with pickup instructions aligned to the arrival hall pharmacy location.
+            </p>
+          </div>
+          <div id="athens-hotel-cards" class="detail-stack reveal"></div>
+        </div>
+      </section>
+
+      <section
+        id="return"
+        class="content-section has-media"
+        data-nav-section
+      >
+        <div
+          class="section-media"
+          data-parallax="0.06"
+          style="background-image: url('https://images.unsplash.com/photo-1549141077-2e2345576951?auto=format&fit=crop&w=1920&q=80');"
+          aria-hidden="true"
+        ></div>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">May 5</span>
+            <h2>Return flights</h2>
+            <p>
+              The trip returns under the same United confirmation <strong>AR01BG</strong>, with customs in Montreal before the final leg home.
+            </p>
+          </div>
+          <div id="return-cards" class="detail-stack reveal"></div>
+        </div>
+      </section>
+
+      <section id="insurance" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Coverage</span>
+            <h2>Travel insurance</h2>
+            <p>
+              Quick policy reference for travel days and emergency coordination.
+            </p>
+          </div>
+          <div id="insurance-cards" class="detail-stack reveal"></div>
+        </div>
+      </section>
+
+      <section id="map" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Route Map</span>
+            <h2>Official tour route plus flights and Santorini</h2>
+            <p>
+              A self-contained Leaflet map showing the mainland Intrepid route as a distinct path from the long-haul flights and Santorini side trip, all without external map tiles.
+            </p>
+          </div>
+          <div class="map-shell glass reveal">
+            <div id="trip-map" role="img" aria-label="Interactive route map showing the official 8-day Greece tour, the Santorini side trip, and the outbound and return flights"></div>
+          </div>
+          <div class="map-caption reveal" aria-hidden="true">
+            <span class="tour-route">Official 8-day tour route</span>
+            <span class="flight-route">Flights and Santorini leg</span>
+            <span class="marker-route">Click markers for stop details</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="weather" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Typical Conditions</span>
+            <h2>Late April to early May weather</h2>
+            <p>
+              Expect comfortable spring touring weather across Athens, the mainland route, and Santorini, with sunny days, cooler evenings, and slightly breezier island sunsets.
+            </p>
+          </div>
+          <div class="weather-grid">
+            <article class="weather-card glass reveal">
+              <div class="weather-top">
+                <div>
+                  <h3>Athens</h3>
+                  <p>Sunny spring city and mainland touring days with dry air and cool evenings.</p>
+                </div>
+                <div class="weather-icon" aria-hidden="true">
+                  <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                    <circle cx="22" cy="22" r="9" fill="#F59E0B"></circle>
+                    <path d="M22 3.5V10" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M22 34V40.5" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M3.5 22H10" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M34 22H40.5" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M8.6 8.6L13.2 13.2" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M30.8 30.8L35.4 35.4" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M35.4 8.6L30.8 13.2" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M13.2 30.8L8.6 35.4" stroke="#FCD34D" stroke-width="3" stroke-linecap="round"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="weather-statline">
+                <span>65 to 75°F</span>
+                <span>18 to 24°C</span>
+                <span>Mostly sunny</span>
+              </div>
+              <p>
+                Expect bright afternoons and easy layering for Athens, Nafplion, Delphi, Olympia, and the central mainland route, with cooler mornings inland.
+              </p>
+            </article>
+            <article class="weather-card glass reveal">
+              <div class="weather-top">
+                <div>
+                  <h3>Santorini</h3>
+                  <p>Sun-filled island weather with sea breeze building near sunset.</p>
+                </div>
+                <div class="weather-icon" aria-hidden="true">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <path d="M12 30C12 22.268 18.268 16 26 16C33.732 16 40 22.268 40 30V34H12V30Z" fill="#FF7F6E" opacity="0.42"></path>
+                    <path d="M10 34H38" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"></path>
+                    <circle cx="24" cy="22" r="8" fill="#F59E0B"></circle>
+                    <path d="M9 39H39" stroke="#9EE7F3" stroke-width="3" stroke-linecap="round"></path>
+                    <path d="M14 43H34" stroke="#9EE7F3" stroke-width="3" stroke-linecap="round" opacity="0.65"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="weather-statline">
+                <span>64 to 73°F</span>
+                <span>18 to 23°C</span>
+                <span>Sunset breeze</span>
+              </div>
+              <p>
+                Plan for warm daytime sightseeing and a light layer for the May 3 Viator tour as the coastal breeze picks up in the late afternoon and evening.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="photos" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Photos</span>
+            <h2>Location photos and albums</h2>
+            <p>
+              Preview each stop on the trip through Google Maps photos, then jump into your shared Google Photos albums as you capture them.
+            </p>
+          </div>
+          <div id="photos-grid" class="photos-grid reveal"></div>
+          <p class="photos-note reveal">
+            <strong>Tip:</strong> After uploading photos from each location, create a shared Google Photos album and paste the link here to keep everything organized by stop.
+          </p>
+        </div>
+      </section>
+
+      <section id="packing" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Checklist</span>
+            <h2>Packing progress</h2>
+            <p>
+              Tick items off as they are packed. Progress is stored in the browser and remains available the next time the file is opened.
+            </p>
+          </div>
+          <div id="packing-overall" class="packing-overall glass reveal">
+            <div class="packing-overall-head">
+              <span class="packing-overall-label">Overall Progress</span>
+              <span class="packing-overall-pct" id="packing-pct">0%</span>
+            </div>
+            <div class="progress-track progress-track-lg" aria-hidden="true">
+              <div class="progress-fill progress-fill-overall" id="packing-fill"></div>
+            </div>
+            <span class="packing-overall-count" id="packing-count">0 / 0 items packed</span>
+          </div>
+          <div id="packing-grid" class="packing-grid reveal"></div>
+        </div>
+      </section>
+
+      <section id="journal" class="content-section" data-nav-section>
+        <div class="container">
+          <div class="section-head reveal">
+            <span class="section-tag">Notes</span>
+            <h2>Trip notes and journal</h2>
+            <p>
+              Keep airport reminders, favorite tavernas, transfer notes, and daily reflections in one place with autosave enabled.
+            </p>
+          </div>
+          <div class="journal-card glass reveal">
+            <div class="journal-head">
+              <div>
+                <h3>Reflections and logistics</h3>
+                <p>Saved locally in this browser session and available when the page is reopened.</p>
+              </div>
+              <div id="save-indicator" class="save-indicator" aria-live="polite">Saved</div>
+            </div>
+            <label class="sr-only" for="journal-input">Trip journal and notes</label>
+            <textarea
+              id="journal-input"
+              placeholder="Capture notes for transfer points, restaurants, views to revisit, or anything to remember before departure."
+            ></textarea>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="emergency" class="footer-section" data-nav-section>
+      <div class="container">
+        <div class="footer-head reveal">
+          <span class="section-tag">Quick Reference</span>
+          <h2>Emergency contacts</h2>
+          <p>
+            The essential contacts for transfers, hotels, insurance, and tour coordination, ready for one-tap calling or email.
+          </p>
+        </div>
+        <div class="emergency-grid">
+          <article class="emergency-card glass reveal">
+            <h3>Intrepid Emergency</h3>
+            <p><strong>Greece:</strong> <a class="contact-link" href="tel:+306945613427">+30 694 561 3427</a></p>
+            <p><strong>Office:</strong> <a class="contact-link" href="tel:+15103794907">+1 510-379-4907</a></p>
+            <p><strong>Email:</strong> <a class="contact-link" href="mailto:hello@intrepidtravel.com">hello@intrepidtravel.com</a></p>
+          </article>
+          <article class="emergency-card glass reveal">
+            <h3>Hotels</h3>
+            <p><strong>Merovigliosso Apartments:</strong> <a class="contact-link" href="tel:+306949617392">+30 694 961 7392</a></p>
+            <p><strong>Peris Hotel:</strong> <a class="contact-link" href="tel:+302294083763">+30 229 408 3763</a></p>
+            <p><strong>Pickup point:</strong> Arrival hall B, in front of the pharmacy shop</p>
+          </article>
+          <article class="emergency-card glass reveal">
+            <h3>Insurance</h3>
+            <p><strong>Provider:</strong> Seven Corners</p>
+            <p><strong>Certificate:</strong> 2TPB26-CA-100114</p>
+            <p><strong>Keep handy:</strong> passport, insurance card, booking confirmations, itinerary copies</p>
+          </article>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const timelineEntries = [
+      {
+        dateLabel: "Apr 25",
+        title: "Depart for Greece",
+        location: "Home → Chicago → Munich",
+        summary: "United 1710 departs at 11:00 AM for Chicago, followed by United 953 at 6:00 PM for the overnight Munich leg.",
+        chip: "Flight Day"
+      },
+      {
+        dateLabel: "Apr 26",
+        title: "Day 1 · Athens arrival and welcome dinner",
+        location: "Munich → Athens",
+        summary: "Arrive Athens at 3:00 PM, transfer to Athenaeum Luxury Hotel or similar, attend the 6:00 PM welcome meeting, and join the included welcome dinner.",
+        chip: "Day 1"
+      },
+      {
+        dateLabel: "Apr 27",
+        title: "Day 2 · Acropolis and north to Kalambaka",
+        location: "Athens → Kalambaka",
+        summary: "Explore the Acropolis with a local guide, enjoy an included lunch, stop at Thermopylae, and continue to Kalambaka for the overnight stay.",
+        chip: "Day 2"
+      },
+      {
+        dateLabel: "Apr 28",
+        title: "Day 3 · Meteora monasteries and sunset",
+        location: "Kalambaka → Meteora → Kalambaka",
+        summary: "Visit the Meteora monasteries with a local guide, return to Kalambaka, and regroup for a sunset visit with an included drink.",
+        chip: "Day 3"
+      },
+      {
+        dateLabel: "Apr 29",
+        title: "Day 4 · Delphi and Nafpaktos",
+        location: "Kalambaka → Delphi → Itea → Nafpaktos",
+        summary: "Tour Delphi with a local guide, meet family beekeepers in Itea for honey tasting, and overnight in the coastal town of Nafpaktos.",
+        chip: "Day 4"
+      },
+      {
+        dateLabel: "Apr 30",
+        title: "Day 5 · Olympia and Dimitsana feature stay",
+        location: "Nafpaktos → Olympia → Dimitsana",
+        summary: "Visit the archaeological site and museum at Olympia, then continue to Dimitsana for the feature-stay night at Mikri Arktos Boutique Hotel.",
+        chip: "Day 5"
+      },
+      {
+        dateLabel: "May 1",
+        title: "Day 6 · Central Arcadia and Lousios Valley",
+        location: "Dimitsana → Central Arcadia → Dimitsana",
+        summary: "Hike Lousios Valley, visit Prodromos Monastery for coffee and Greek delight, continue to Ancient Gortys, and return to Dimitsana.",
+        chip: "Day 6"
+      },
+      {
+        dateLabel: "May 2",
+        title: "Day 7 · Mycenae, Nafplion, and return to Athens",
+        location: "Dimitsana → Mycenae → Nafplion → Athens",
+        summary: "Visit Mycenae, explore Nafplion, stop for an ouzo tasting, and return to Athens for the farewell dinner and final Intrepid overnight.",
+        chip: "Day 7"
+      },
+      {
+        dateLabel: "May 3",
+        title: "Day 8 · Tour ends, Santorini begins",
+        location: "Athens → Santorini",
+        summary: "The official Intrepid itinerary ends after breakfast in Athens, followed by the 10:00 AM flight to Santorini and the 3:00 PM to 8:00 PM Viator tour.",
+        chip: "Tour + Island"
+      },
+      {
+        dateLabel: "May 4",
+        title: "Back to Athens",
+        location: "Santorini → Athens",
+        summary: "Flight 359 departs Santorini at 6:40 PM, lands in Athens at 7:30 PM, then check into Peris Hotel for the final night.",
+        chip: "Transit"
+      },
+      {
+        dateLabel: "May 5",
+        title: "Return home",
+        location: "Athens → Montreal → Home",
+        summary: "United 8588 departs Athens at 12:00 PM for Montreal with customs there, followed by United 8607 at 5:45 PM for home.",
+        chip: "Return"
+      }
+    ];
+
+    const tourDays = [
+      {
+        day: "Day 1",
+        dateLabel: "Apr 26",
+        title: "Athens arrival and welcome dinner",
+        route: "Athens",
+        overnight: "Athens",
+        accommodation: "Athenaeum Luxury Hotel or similar (1 night)",
+        meals: ["Dinner"],
+        includedActivities: [
+          "Athens - Welcome Dinner at Local Restaurant",
+          "Complimentary Arrival Transfer"
+        ],
+        optionalActivities: [
+          "National Archaeological Museum - EUR15",
+          "Acropolis Museum - EUR20",
+          "National Gallery of Athens - EUR10",
+          "Numismatic Museum - EUR15"
+        ],
+        specialInfo: [
+          "The welcome meeting starts at 6:00 PM and is important because insurance details and next-of-kin information are collected then.",
+          "If arrival is delayed, notify the travel agent or hotel reception and check the lobby for updated meeting instructions."
+        ],
+        summary: "Welcome to Athens. After airport transfer and hotel check-in, the trip begins with the evening meeting and included dinner."
+      },
+      {
+        day: "Day 2",
+        dateLabel: "Apr 27",
+        title: "Acropolis visit and transfer to Kalambaka",
+        route: "Athens → Kalambaka",
+        overnight: "Kalambaka",
+        accommodation: "Monastery Guesthouse or similar (1 night)",
+        meals: ["Breakfast", "Lunch"],
+        includedActivities: [
+          "Athens - Acropolis Archaeological Site Visit with Local Guide"
+        ],
+        optionalActivities: [],
+        specialInfo: [
+          "Travel time is approximately 4 hours."
+        ],
+        summary: "Begin with the Acropolis and a traditional lunch in Athens, then head north via Thermopylae to Kalambaka at the base of the Meteora mountains."
+      },
+      {
+        day: "Day 3",
+        dateLabel: "Apr 28",
+        title: "Meteora monasteries and sunset drink",
+        route: "Kalambaka → Meteora → Kalambaka",
+        overnight: "Kalambaka",
+        accommodation: "Monastery Guesthouse or similar (1 night)",
+        meals: ["Breakfast"],
+        includedActivities: [
+          "Meteora - Monastery Visits",
+          "Meteora - Sunset Visit with Included Drink"
+        ],
+        optionalActivities: [
+          "Sunset tour - EUR35",
+          "Digital Centre of Meteora Projection - EUR3",
+          "Natural History Museum of Meteora - EUR6"
+        ],
+        specialInfo: [
+          "Travel time is approximately 1.5 hours."
+        ],
+        summary: "Explore the cliff-top monasteries of Meteora with a local guide, then return to Kalambaka before an included sunset stop in the surrounding hills."
+      },
+      {
+        day: "Day 4",
+        dateLabel: "Apr 29",
+        title: "Delphi, honey tasting, and Nafpaktos",
+        route: "Kalambaka → Delphi → Itea → Nafpaktos",
+        overnight: "Nafpaktos",
+        accommodation: "Nafs Hotel or similar (1 night)",
+        meals: ["Breakfast"],
+        includedActivities: [
+          "Delphi - Archaeological Site and Museum Visit with Local Guide",
+          "Itea - Beekeeping Experience and Honey Tasting"
+        ],
+        optionalActivities: [],
+        specialInfo: [
+          "Travel time is approximately 5.5 hours."
+        ],
+        summary: "Visit Delphi with a local guide, then stop in Itea for the beekeeping experience before continuing to the coast for the night in Nafpaktos."
+      },
+      {
+        day: "Day 5",
+        dateLabel: "Apr 30",
+        title: "Olympia and feature stay in Dimitsana",
+        route: "Nafpaktos → Olympia → Dimitsana",
+        overnight: "Dimitsana",
+        accommodation: "Mikri Arktos Boutique Hotel (feature stay) or similar (1 night)",
+        meals: ["Breakfast"],
+        includedActivities: [
+          "Olympia - Archaeological Site and Museum Visit with Local Guide"
+        ],
+        optionalActivities: [],
+        specialInfo: [
+          "Travel time is approximately 4 hours.",
+          "Roads in Central Arcadia are windy, so motion-sickness medication may be helpful if needed."
+        ],
+        summary: "After Olympia's ancient stadium and museum, continue into the mountains for the feature stay in the medieval village of Dimitsana."
+      },
+      {
+        day: "Day 6",
+        dateLabel: "May 1",
+        title: "Central Arcadia, Prodromos Monastery, and Ancient Gortys",
+        route: "Dimitsana → Lousios Valley → Dimitsana",
+        overnight: "Dimitsana",
+        accommodation: "Mikri Arktos Boutique Hotel (feature stay) or similar (1 night)",
+        meals: ["Breakfast", "Lunch"],
+        includedActivities: [
+          "Central Arcadia - Lousios Valley Hike with Local Guide",
+          "Central Arcadia - Prodromos Monastery Visit with Coffee and Greek Delight",
+          "Central Arcadia - Ancient Gortys Temple Visit"
+        ],
+        optionalActivities: [
+          "Dimitsana - Open-Air Water Power Museum - EUR4"
+        ],
+        specialInfo: [
+          "Walking time is approximately 5 km or 3 hours.",
+          "Travel time is approximately 2 hours and the Central Arcadia roads are very windy.",
+          "If preferred, it is possible to skip the hike and use the private transfer to meet the group at the end point."
+        ],
+        summary: "A guided hike through Lousios Valley leads to Prodromos Monastery, coffee with the monks, Ancient Gortys, and lunch in a traditional Arcadia village."
+      },
+      {
+        day: "Day 7",
+        dateLabel: "May 2",
+        title: "Mycenae, Nafplion, ouzo tasting, and farewell dinner",
+        route: "Dimitsana → Mycenae → Nafplion → Athens",
+        overnight: "Athens",
+        accommodation: "Athenaeum Luxury Hotel or similar (1 night)",
+        meals: ["Breakfast", "Dinner"],
+        includedActivities: [
+          "Mycenae - Archaeological Site with Guide",
+          "Nafplion - Ouzo Tasting"
+        ],
+        optionalActivities: [],
+        specialInfo: [
+          "Travel time is approximately 4 hours."
+        ],
+        summary: "Visit the Mycenae archaeological site, spend time in Nafplion, taste ouzo, and return to Athens for the included farewell dinner."
+      },
+      {
+        day: "Day 8",
+        dateLabel: "May 3",
+        title: "Athens departure day",
+        route: "Athens",
+        overnight: "Trip ends after breakfast",
+        accommodation: "No included accommodation beyond the final Athens overnight",
+        meals: ["Breakfast"],
+        includedActivities: [],
+        optionalActivities: [],
+        specialInfo: [
+          "The Intrepid trip ends after breakfast in Athens.",
+          "This same morning begins the separate Santorini side trip already booked on the page."
+        ],
+        summary: "The official tour concludes after breakfast, creating the handoff point into the Santorini flights and island stay."
+      }
+    ];
+
+    const tourPresentation = {
+      "Day 1": {
+        kicker: "Arrival in Athens",
+        highlight: "Airport transfer, welcome meeting, and the first shared dinner set the tone without asking the first day to carry too much.",
+        facts: ["Apr 26", "Athens", "Dinner included"]
+      },
+      "Day 2": {
+        kicker: "Ancient Athens to the northbound road",
+        highlight: "The Acropolis, a traditional lunch, and the transition into the mountain route.",
+        facts: ["Apr 27", "Athens to Kalambaka", "Breakfast and lunch"]
+      },
+      "Day 3": {
+        kicker: "Clifftop monasteries",
+        highlight: "Meteora is the first true cinematic pivot of the trip: stone monasteries above the valley and a sunset drink to close the day.",
+        facts: ["Apr 28", "Kalambaka overnight", "Monastery visits"],
+        featured: true,
+        visual: "https://images.unsplash.com/photo-1530143475502-78f8b58e9c4b?auto=format&fit=crop&w=900&q=80"
+      },
+      "Day 4": {
+        kicker: "Oracle and coast",
+        highlight: "Delphi's archaeological gravity gives way to honey tasting and a softer coastal night in Nafpaktos.",
+        facts: ["Apr 29", "Delphi and Itea", "Nafpaktos overnight"]
+      },
+      "Day 5": {
+        kicker: "Feature stay begins",
+        highlight: "Olympia delivers the athletic mythos, then the route shifts into the slower, more romantic mountain stay in Dimitsana.",
+        facts: ["Apr 30", "Olympia", "Dimitsana feature stay"]
+      },
+      "Day 6": {
+        kicker: "Arcadia deepens the trip",
+        highlight: "Lousios Valley, Prodromos Monastery, coffee with monks, and Ancient Gortys make this the most atmospheric inland day.",
+        facts: ["May 1", "Dimitsana base", "Breakfast and lunch"],
+        featured: true,
+        visual: "https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=900&q=80"
+      },
+      "Day 7": {
+        kicker: "Ancient ruins to seaside finish",
+        highlight: "Mycenae and Nafplion give the route a final sense of grandeur and ease before the farewell dinner back in Athens.",
+        facts: ["May 2", "Mycenae and Nafplion", "Farewell dinner"],
+        featured: true,
+        visual: "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=900&q=80"
+      },
+      "Day 8": {
+        kicker: "Handoff to the island add-on",
+        highlight: "The guided route closes after breakfast, then the separate Santorini booking takes over as the trip changes rhythm.",
+        facts: ["May 3", "Athens", "Santorini departure"]
+      }
+    };
+
+    const cardSections = {
+      outbound: [
+        {
+          label: "Confirmation",
+          title: "United Airlines booking AR01BG",
+          meta: ["Saturday, April 25", "3 flight legs", "United Airlines"],
+          badge: "Open details",
+          details: [
+            "Confirmation number: <strong>AR01BG</strong>",
+            "Carrier: United Airlines",
+            "Trip sequence: Home → Chicago → Munich → Athens",
+            "Connection note: Quick deplane and replane in Chicago",
+            "Customs note: Clear customs in Munich before the final leg to Athens"
+          ]
+        },
+        {
+          label: "Leg 1",
+          title: "United 1710 · Home to Chicago",
+          meta: ["11:00 AM departure", "5:00 PM arrival", "Quick connection"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>United 1710</strong>",
+            "Departure: Saturday, April 25 at 11:00 AM",
+            "Arrival: Saturday, April 25 at 5:00 PM",
+            "Destination: Chicago",
+            "Operational note: QUICK deplane and replane"
+          ]
+        },
+        {
+          label: "Leg 2",
+          title: "United 953 · Chicago to Munich",
+          meta: ["6:00 PM departure", "9:40 AM arrival (+1)", "Overnight segment"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>United 953</strong>",
+            "Departure: Saturday, April 25 at 6:00 PM",
+            "Arrival: Sunday, April 26 at 9:40 AM",
+            "Destination: Munich",
+            "Customs: Complete customs in Munich"
+          ]
+        },
+        {
+          label: "Leg 3",
+          title: "United 8924 · Munich to Athens",
+          meta: ["11:20 AM departure", "3:00 PM arrival", "Athens arrival"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>United 8924</strong>",
+            "Departure: Sunday, April 26 at 11:20 AM",
+            "Arrival: Sunday, April 26 at 3:00 PM",
+            "Destination: Athens",
+            "Arrival support: Intrepid transfer pickup follows in the airport arrival hall"
+          ]
+        }
+      ],
+      intrepid: [
+        {
+          label: "Booking",
+          title: "Intrepid Travel booking 6837475",
+          meta: ["Tour contact hub", "Arrival transfer support"],
+          badge: "Open details",
+          details: [
+            "Booking number: <strong>6837475</strong>",
+            "Email: <a href='mailto:hello@intrepidtravel.com'>hello@intrepidtravel.com</a>",
+            "Website: <a href='https://www.intrepidtravel.com' target='_blank' rel='noreferrer'>www.intrepidtravel.com</a>",
+            "Phone: <a href='tel:+15103794907'>+1 510-379-4907</a>",
+            "Emergency in Greece: <a href='tel:+306945613427'>+30 694 561 3427</a>"
+          ]
+        },
+        {
+          label: "Joining Point",
+          title: "Athenaeum Luxury Hotel or similar",
+          meta: ["Athens 11743", "Welcome meeting 6:00 PM", "Tour start hotel"],
+          badge: "Hotel details",
+          details: [
+            "Joining point hotel: <strong>The Athenaeum Hotel / Athenaeum Luxury Hotel or similar</strong>",
+            "Address context: 4 Vouliagmenis Avenue & Kallirois Street, Athens 11743, Greece",
+            "Phone: <a href='tel:+302121071800'>+30 2121071800</a>",
+            "Location note: Within walking distance of the Acropolis and Temple of Olympian Zeus"
+          ]
+        },
+        {
+          label: "Arrival Transfer",
+          title: "Athens airport pickup instructions",
+          meta: ["Arrival Hall Section A or B", "Backup at EXIT 4"],
+          badge: "Open details",
+          details: [
+            "Drivers should be in the Airport Arrival Hall, Section A or B, holding an Intrepid sign.",
+            "If no driver is visible, go to <strong>EXIT 4</strong>, directly opposite the pharmacy, where an assistant will help.",
+            "Call the Greece emergency number for cancellations, delays, immigration issues, baggage delays, or if the driver cannot be located.",
+            "Provide flight details at booking time or at least 14 days before travel when possible."
+          ]
+        },
+        {
+          label: "Athens Access",
+          title: "Independent transfer and arrival fallback",
+          meta: ["Taxi or metro", "Useful if transfer changes"],
+          badge: "Transit notes",
+          details: [
+            "Taxi from Athens Airport to central Athens usually takes 30 to 45 minutes and costs about EUR 50 depending on the time of day.",
+            "Metro option: Line 3 to Syntagma, change to Line 2 toward Elliniko, exit at Acropolis station.",
+            "The hotel is approximately 450 meters from Acropolis station.",
+            "Keep an eye on personal belongings on public transport because pick-pocketing can occur."
+          ]
+        }
+      ],
+      santorini: [
+        {
+          label: "Confirmation",
+          title: "Santorini side trip booking AVA92C",
+          meta: ["May 3 to 4", "Flights + hotel + tour"],
+          badge: "Open details",
+          details: [
+            "Confirmation number: <strong>AVA92C</strong>",
+            "Core itinerary: Athens → Santorini → Athens",
+            "Hotel: Merovigliosso Apartments",
+            "Tour included: Viator experience on May 3 from 3:00 PM to 8:00 PM",
+            "Keep the travel companion link accessible for mobile reference"
+          ]
+        },
+        {
+          label: "Flight 354",
+          title: "May 3 · Athens to Santorini",
+          meta: ["10:00 AM departure", "11:00 AM arrival"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>354</strong>",
+            "Departure: Sunday, May 3 at 10:00 AM",
+            "Arrival: Sunday, May 3 at 11:00 AM",
+            "Destination: Santorini"
+          ]
+        },
+        {
+          label: "Hotel",
+          title: "Merovigliosso Apartments",
+          meta: ["Hotels.com itinerary 73350223255072", "Imerovigli stay"],
+          badge: "Stay details",
+          details: [
+            "Phone: <a href='tel:+306949617392'>+30 694 961 7392</a>",
+            "Hotels.com itinerary: <strong>73350223255072</strong>",
+            "Use this number for check-in support or arrival questions."
+          ]
+        },
+        {
+          label: "Viator",
+          title: "May 3 sunset tour",
+          meta: ["3:00 PM to 8:00 PM", "Booking ref 1355776507"],
+          badge: "Tour details",
+          details: [
+            "Booking reference: <strong>1355776507</strong>",
+            "Meeting spot: Bus Stop Imerovigli, Unnamed Rd, Imerovigli 847 00, Greece",
+            "Travel companion link: <a href='https://www.viator.com/account/booking/1355776507/travel-companion-invitation?code=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlIjoiQlItMTM1NTc3NjUwNyIsInQiOjE3NzU2ODkyMzYsInAiOiJUUkFWRUxfQ09NUEFOSU9OIn0.pz4QRyekdFLJeKoIqaqnx3WHB67WkqO3GeAnhQhkluIOjBKr_dw8qHuaglLv2PrMNEring7P7tJ4Rg2jlnIppg' target='_blank' rel='noreferrer'>Open travel companion</a>"
+          ]
+        },
+        {
+          label: "Flight 359",
+          title: "May 4 · Santorini to Athens",
+          meta: ["6:40 PM departure", "7:30 PM arrival"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>359</strong>",
+            "Departure: Monday, May 4 at 6:40 PM",
+            "Arrival: Monday, May 4 at 7:30 PM",
+            "Destination: Athens"
+          ]
+        }
+      ],
+      athensHotel: [
+        {
+          label: "Final Night",
+          title: "Peris Hotel",
+          meta: ["May 4 to 5", "Hotels.com itinerary 73356141061440"],
+          badge: "Open details",
+          details: [
+            "Phone: <a href='tel:+302294083763'>+30 229 408 3763</a>",
+            "Pickup: Inside arrival hall B, in front of the pharmacy shop",
+            "Hotels.com itinerary: <strong>73356141061440</strong>"
+          ]
+        }
+      ],
+      return: [
+        {
+          label: "Confirmation",
+          title: "United Airlines return booking AR01BG",
+          meta: ["Tuesday, May 5", "2 flight legs", "United + Air Canada"],
+          badge: "Open details",
+          details: [
+            "Confirmation number: <strong>AR01BG</strong>",
+            "Return routing: Athens → Montreal → Home",
+            "Customs note: Clear customs in Montreal"
+          ]
+        },
+        {
+          label: "Leg 1",
+          title: "United 8588 operated by Air Canada",
+          meta: ["12:00 PM departure", "3:00 PM arrival", "Athens to Montreal"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>United 8588</strong> (operated by Air Canada)",
+            "Departure: Tuesday, May 5 at 12:00 PM",
+            "Arrival: Tuesday, May 5 at 3:00 PM",
+            "Destination: Montreal",
+            "Customs: Complete customs in Montreal before the final leg"
+          ]
+        },
+        {
+          label: "Leg 2",
+          title: "United 8607 · Montreal to Home",
+          meta: ["5:45 PM departure", "8:45 PM arrival", "Final segment"],
+          badge: "Flight details",
+          details: [
+            "Flight number: <strong>United 8607</strong>",
+            "Departure: Tuesday, May 5 at 5:45 PM",
+            "Arrival: Tuesday, May 5 at 8:45 PM",
+            "Destination: Home"
+          ]
+        }
+      ],
+      insurance: [
+        {
+          label: "Policy",
+          title: "Seven Corners coverage",
+          meta: ["Certificate 2TPB26-CA-100114"],
+          badge: "Open details",
+          details: [
+            "Provider: <strong>Seven Corners</strong>",
+            "Certificate number: <strong>2TPB26-CA-100114</strong>",
+            "Recommended carry items: passport, booking confirmations, insurance details, and itinerary copies"
+          ]
+        }
+      ]
+    };
+
+    const mapPoints = [
+      { id: "chicago", name: "Chicago", coords: [41.8781, -87.6298], note: "Outbound connection before the overnight Munich flight." },
+      { id: "munich", name: "Munich", coords: [48.1351, 11.582], note: "Customs stop before the Athens arrival." },
+      { id: "athens", name: "Athens", coords: [37.9838, 23.7275], note: "Arrival city, joining point, final Intrepid overnight, Santorini gateway, and departure airport." },
+      { id: "kalambaka", name: "Kalambaka", coords: [39.7094, 21.6273], note: "Base town for the Meteora portion of the tour." },
+      { id: "meteora", name: "Meteora", coords: [39.7217, 21.6309], note: "Cliff-top monasteries visited with a local guide." },
+      { id: "delphi", name: "Delphi", coords: [38.4824, 22.501], note: "Archaeological site and museum visit with local guide." },
+      { id: "nafpaktos", name: "Nafpaktos", coords: [38.3928, 21.8275], note: "Coastal overnight after Delphi and the Itea honey tasting stop." },
+      { id: "olympia", name: "Olympia", coords: [37.6379, 21.63], note: "Ancient Olympic site and museum visit." },
+      { id: "dimitsana", name: "Dimitsana", coords: [37.5817, 22.0403], note: "Feature-stay base for Central Arcadia and Lousios Valley." },
+      { id: "mycenae", name: "Mycenae", coords: [37.7308, 22.7544], note: "UNESCO archaeological site visited on Day 7." },
+      { id: "nafplion", name: "Nafplion", coords: [37.5683, 22.805], note: "Seaside town stop before the return to Athens." },
+      { id: "santorini", name: "Santorini", coords: [36.3932, 25.4615], note: "Island side trip for May 3 to 4." },
+      { id: "montreal", name: "Montreal", coords: [45.5017, -73.5673], note: "Customs on the return before the final leg home." }
+    ];
+
+    const mapRoutes = [
+      {
+        ids: ["athens", "kalambaka", "meteora", "delphi", "nafpaktos", "olympia", "dimitsana", "mycenae", "nafplion", "athens"],
+        style: {
+          color: "#0ea5e9",
+          weight: 3.4,
+          opacity: 0.92,
+          lineCap: "round"
+        }
+      },
+      {
+        ids: ["chicago", "munich", "athens", "santorini", "athens", "montreal"],
+        style: {
+          color: "#0369a1",
+          weight: 2.8,
+          opacity: 0.72,
+          dashArray: "10 12",
+          lineCap: "round"
+        }
+      }
+    ];
+
+    const photoLocations = [
+      {
+        id: "athens",
+        name: "Athens",
+        img: "https://images.unsplash.com/photo-1555993539-1732b0258235?auto=format&fit=crop&w=600&q=70",
+        description: "The Acropolis, Plaka, and the welcome dinner neighborhood.",
+        mapsUrl: "https://www.google.com/maps/place/Acropolis+of+Athens/@37.971533,23.726273,17z/data=!3m1!4b1!4m6!3m5!1s0x14a1bd3729214371:0x372b7725e55b5277!8m2!3d37.9715327!4d23.7266473!16zL20vMDFjajg",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "kalambaka",
+        name: "Kalambaka & Meteora",
+        img: "https://images.unsplash.com/photo-1530143475502-78f8b58e9c4b?auto=format&fit=crop&w=600&q=70",
+        description: "Clifftop monasteries and the gateway town of Kalambaka.",
+        mapsUrl: "https://www.google.com/maps/place/Meteora/@39.721749,21.627193,14z/data=!3m1!4b1!4m6!3m5!1s0x135b4f75e3c53a31:0x1c8e1c8e1c8e1c8e!8m2!3d39.7217!4d21.6309!16zL20vMDRiZHE",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "delphi",
+        name: "Delphi",
+        img: "https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=600&q=70",
+        description: "The Oracle's sanctuary and the archaeological museum.",
+        mapsUrl: "https://www.google.com/maps/place/Archaeological+Site+of+Delphi/@38.4824,22.501,17z/data=!3m1!4b1!4m6!3m5!1s0x14a1d1e5e3c53a31:0x1c8e1c8e1c8e1c8e!8m2!3d38.4824!4d22.501",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "olympia",
+        name: "Ancient Olympia",
+        img: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=600&q=70",
+        description: "The original Olympic stadium and Temple of Zeus.",
+        mapsUrl: "https://www.google.com/maps/place/Archaeological+Site+of+Olympia/@37.6379,21.63,17z/data=!3m1!4b1!4m6!3m5!1s0x14a1d1e5e3c53a31:0x1c8e1c8e1c8e1c8e!8m2!3d37.6379!4d21.63",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "dimitsana",
+        name: "Dimitsana & Arcadia",
+        img: "https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=600&q=70",
+        description: "Mountain village feature stay, Lousios Valley, and Prodromos Monastery.",
+        mapsUrl: "https://www.google.com/maps/place/Dimitsana/@37.5817,22.0403,14z/data=!3m1!4b1!4m6!3m5!1s0x14a1d1e5e3c53a31:0x1c8e1c8e1c8e1c8e!8m2!3d37.5817!4d22.0403",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "mycenae",
+        name: "Mycenae & Nafplion",
+        img: "https://images.unsplash.com/photo-1549141077-2e2345576951?auto=format&fit=crop&w=600&q=70",
+        description: "The Lion Gate, Agamemnon's palace, and the seaside town of Nafplion.",
+        mapsUrl: "https://www.google.com/maps/place/Archaeological+Site+of+Mycenae/@37.7308,22.7544,17z/data=!3m1!4b1!4m6!3m5!1s0x14a1d1e5e3c53a31:0x1c8e1c8e1c8e1c8e!8m2!3d37.7308!4d22.7544",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "santorini",
+        name: "Santorini",
+        img: "https://images.unsplash.com/photo-1570031223525-4b6db20b60e3?auto=format&fit=crop&w=600&q=70",
+        description: "Imerovigli sunsets, caldera views, and the Viator island tour.",
+        mapsUrl: "https://www.google.com/maps/place/Santorini/@36.3932,25.4615,13z/data=!3m1!4b1!4m6!3m5!1s0x149a6d0c1c37e855:0xe54375d9f6c19e0e!8m2!3d36.3932!4d25.4615",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      },
+      {
+        id: "nafpaktos",
+        name: "Nafpaktos",
+        img: "https://images.unsplash.com/photo-1478391679764-b2d8b3cd1e94?auto=format&fit=crop&w=600&q=70",
+        description: "Coastal harbor town with Venetian fortress views.",
+        mapsUrl: "https://www.google.com/maps/place/Nafpaktos/@38.3928,21.8275,14z/data=!3m1!4b1!4m6!3m5!1s0x14a1d1e5e3c53a31:0x1c8e1c8e1c8e1c8e!8m2!3d38.3928!4d21.8275",
+        photosUrl: "",
+        photosLabel: "Google Photos album"
+      }
+    ];
+
+    const packingCategories = [
+      {
+        title: "Documents",
+        key: "documents",
+        items: [
+          "Passports",
+          "Insurance card",
+          "Booking confirmations",
+          "Copies of itinerary"
+        ]
+      },
+      {
+        title: "Clothing",
+        key: "clothing",
+        items: [
+          "Light layers",
+          "Comfortable walking shoes",
+          "Swimwear",
+          "Sun hat"
+        ]
+      },
+      {
+        title: "Electronics",
+        key: "electronics",
+        items: [
+          "Phone chargers",
+          "Adapters for EU outlets",
+          "Camera",
+          "Power bank"
+        ]
+      },
+      {
+        title: "Toiletries",
+        key: "toiletries",
+        items: [
+          "Sunscreen",
+          "Medications",
+          "Travel-size essentials"
+        ]
+      },
+      {
+        title: "Miscellaneous",
+        key: "misc",
+        items: [
+          "Snacks",
+          "Reusable water bottle",
+          "Day pack",
+          "Guidebook"
+        ]
+      }
+    ];
+
+    const navLinks = [...document.querySelectorAll(".nav-links a")];
+    const topNav = document.querySelector(".top-nav");
+    const navToggle = document.querySelector(".nav-toggle");
+    const navLinksPanel = document.getElementById("nav-links");
+    const sectionTargets = [...document.querySelectorAll("[data-nav-section]")];
+    const revealNodes = [...document.querySelectorAll(".reveal")];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const storageKeys = {
+      packing: "greece2026Packing",
+      journal: "greece2026Journal"
+    };
+
+    function safeParse(key, fallback) {
+      try {
+        const raw = window.localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function safeSet(key, value) {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+      } catch (error) {
+        return;
+      }
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById("timeline-list");
+      container.innerHTML = timelineEntries
+        .map(
+          (entry) => `
+            <article class="timeline-item">
+              <div class="timeline-date">${entry.dateLabel}</div>
+              <div class="timeline-card glass">
+                <span class="timeline-route">${entry.location}</span>
+                <h3>${entry.title}</h3>
+                <p>${entry.summary}</p>
+              </div>
+            </article>
+          `
+        )
+        .join("");
+    }
+
+    function createCardMarkup(card, sectionKey, index) {
+      const panelId = `${sectionKey}-panel-${index}`;
+      return `
+        <article class="detail-card glass ${card.defaultOpen ? "is-open" : ""}">
+          <button class="detail-toggle" aria-expanded="${card.defaultOpen ? "true" : "false"}" aria-controls="${panelId}">
+            <div class="detail-head">
+              <span class="detail-label">${card.label}</span>
+              <h3>${card.title}</h3>
+              <div class="detail-meta">
+                ${card.meta.map((item) => `<span>${item}</span>`).join("")}
+              </div>
+            </div>
+            <span class="detail-badge">${card.badge}</span>
+          </button>
+          <div id="${panelId}" class="detail-panel">
+            <div class="detail-panel-inner">
+              <ul class="detail-list">
+                ${card.details.map((item) => `<li>${item}</li>`).join("")}
+              </ul>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderCardSections() {
+      const sectionTargetsMap = {
+        outbound: "outbound-cards",
+        intrepid: "intrepid-cards",
+        santorini: "santorini-cards",
+        athensHotel: "athens-hotel-cards",
+        return: "return-cards",
+        insurance: "insurance-cards"
+      };
+
+      Object.entries(sectionTargetsMap).forEach(([key, targetId]) => {
+        const target = document.getElementById(targetId);
+        target.innerHTML = cardSections[key].map((card, index) => createCardMarkup(card, key, index)).join("");
+      });
+    }
+
+    function renderTourDays() {
+      const target = document.getElementById("tour-cards");
+      if (!target) {
+        return;
+      }
+
+      function buildDayPanel(day) {
+        const includedMarkup = day.includedActivities.length
+          ? `<ul>${day.includedActivities.map((item) => `<li>${item}</li>`).join("")}</ul>`
+          : "<p>No scheduled included activities beyond the overnight and meals.</p>";
+        const optionalMarkup = day.optionalActivities.length
+          ? `
+            <div class="detail-block full">
+              <h4>Optional activities</h4>
+              <ul>${day.optionalActivities.map((item) => `<li>${item}</li>`).join("")}</ul>
+            </div>
+          `
+          : "";
+        const specialInfoMarkup = day.specialInfo.length
+          ? `
+            <div class="detail-block full">
+              <h4>Special information</h4>
+              <ul>${day.specialInfo.map((item) => `<li>${item}</li>`).join("")}</ul>
+            </div>
+          `
+          : "";
+
+        return `
+          <div class="detail-panel-inner">
+            <p class="tour-day-summary">${day.summary}</p>
+            <div class="detail-grid">
+              <div class="detail-block">
+                <h4>Overnight</h4>
+                <p>${day.overnight}</p>
+              </div>
+              <div class="detail-block">
+                <h4>Meals</h4>
+                <p>${day.meals.join(" · ")}</p>
+              </div>
+              <div class="detail-block full">
+                <h4>Accommodation</h4>
+                <p>${day.accommodation}</p>
+              </div>
+              <div class="detail-block full">
+                <h4>Included activities</h4>
+                ${includedMarkup}
+              </div>
+              ${optionalMarkup}
+              ${specialInfoMarkup}
+            </div>
+          </div>
+        `;
+      }
+
+      target.innerHTML = tourDays
+        .map((day, index) => {
+          const presentation = tourPresentation[day.day] || {};
+          const enriched = { ...day, ...presentation, panelId: `tour-panel-${index}` };
+          const routeLine =
+            enriched.overnight === "Trip ends after breakfast"
+              ? `${enriched.route} · ${enriched.overnight}`
+              : `${enriched.route} · Overnight in ${enriched.overnight}`;
+
+          if (enriched.featured) {
+            return `
+              <article class="detail-card glass tour-featured-card" style="background-image: url('${enriched.visual}');">
+                <button class="detail-toggle" aria-expanded="false" aria-controls="${enriched.panelId}">
+                  <div class="detail-head">
+                    <span class="detail-label">${enriched.day}</span>
+                    <span class="tour-kicker">${enriched.kicker}</span>
+                    <h3>${enriched.title}</h3>
+                    <p class="tour-highlight">${enriched.highlight}</p>
+                    <span class="tour-route-line">${routeLine}</span>
+                    <div class="tour-facts">
+                      ${enriched.facts.map((fact) => `<span>${fact}</span>`).join("")}
+                    </div>
+                  </div>
+                  <span class="detail-badge">Read day</span>
+                </button>
+                <div id="${enriched.panelId}" class="detail-panel">
+                  ${buildDayPanel(enriched)}
+                </div>
+              </article>
+            `;
+          }
+
+          return `
+            <article class="detail-card glass tour-support-card">
+              <button class="detail-toggle" aria-expanded="false" aria-controls="${enriched.panelId}">
+                <div class="detail-head">
+                  <span class="detail-label">${enriched.day}</span>
+                  <span class="tour-kicker">${enriched.kicker}</span>
+                  <h3>${enriched.title}</h3>
+                  <span class="tour-route-line">${routeLine}</span>
+                  <p class="tour-highlight">${enriched.highlight}</p>
+                  <div class="tour-facts">
+                    ${enriched.facts.map((fact) => `<span>${fact}</span>`).join("")}
+                  </div>
+                </div>
+                <span class="detail-badge">Open day</span>
+              </button>
+              <div id="${enriched.panelId}" class="detail-panel">
+                ${buildDayPanel(enriched)}
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    function setupMobileNav() {
+      if (!navToggle || !navLinksPanel || !topNav) {
+        return;
+      }
+
+      function closeNav() {
+        topNav.classList.remove("is-open");
+        navLinksPanel.classList.remove("is-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
+
+      navToggle.addEventListener("click", () => {
+        const isOpen = navLinksPanel.classList.toggle("is-open");
+        topNav.classList.toggle("is-open", isOpen);
+        navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+
+      navLinksPanel.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target instanceof HTMLAnchorElement) {
+          closeNav();
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 720) {
+          closeNav();
+        }
+      });
+    }
+
+    function syncOpenPanel(card) {
+      const panel = card.querySelector(".detail-panel");
+      if (!panel) {
+        return;
+      }
+      panel.style.maxHeight = card.classList.contains("is-open") ? `${panel.scrollHeight}px` : "0px";
+    }
+
+    function setupAccordions() {
+      const cards = [...document.querySelectorAll(".detail-card")];
+
+      cards.forEach((card) => {
+        syncOpenPanel(card);
+        const button = card.querySelector(".detail-toggle");
+        button.addEventListener("click", () => {
+          const isOpen = card.classList.toggle("is-open");
+          button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          syncOpenPanel(card);
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        cards.forEach(syncOpenPanel);
+      });
+    }
+
+    function setupReveals() {
+      if (!("IntersectionObserver" in window)) {
+        revealNodes.forEach((node) => node.classList.add("is-visible"));
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.16,
+          rootMargin: "0px 0px -8% 0px"
+        }
+      );
+
+      revealNodes.forEach((node) => {
+        if (!node.classList.contains("is-visible")) {
+          observer.observe(node);
+        }
+      });
+    }
+
+    function setupActiveNav() {
+      if (!("IntersectionObserver" in window)) {
+        return;
+      }
+
+      const linkById = new Map(navLinks.map((link) => [link.getAttribute("href").slice(1), link]));
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              return;
+            }
+
+            navLinks.forEach((link) => link.classList.remove("active"));
+            const current = linkById.get(entry.target.id);
+            if (current) {
+              current.classList.add("active");
+            }
+          });
+        },
+        {
+          threshold: 0.4,
+          rootMargin: "-35% 0px -45% 0px"
+        }
+      );
+
+      sectionTargets.forEach((section) => observer.observe(section));
+    }
+
+    function setupParallax() {
+      if (reducedMotion) {
+        return;
+      }
+
+      const layers = [...document.querySelectorAll("[data-parallax]")];
+      if (!layers.length) {
+        return;
+      }
+
+      let ticking = false;
+
+      const update = () => {
+        const viewportHeight = window.innerHeight;
+        layers.forEach((layer) => {
+          const speed = Number(layer.dataset.parallax || 0.08);
+          const rect = layer.parentElement.getBoundingClientRect();
+          const travel = (rect.top + rect.height / 2 - viewportHeight / 2) * -speed;
+          layer.style.setProperty("--shift", `${travel}px`);
+        });
+        ticking = false;
+      };
+
+      const onScroll = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      };
+
+      update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+    }
+
+    function renderPacking() {
+      const grid = document.getElementById("packing-grid");
+      const savedState = safeParse(storageKeys.packing, {});
+
+      grid.innerHTML = packingCategories
+        .map((category) => {
+          const itemsMarkup = category.items
+            .map((item, index) => {
+              const itemId = `${category.key}-${index}`;
+              const checked = Boolean(savedState[itemId]);
+              return `
+                <label class="checklist-item">
+                  <input type="checkbox" data-item-id="${itemId}" ${checked ? "checked" : ""}>
+                  <span class="${checked ? "done" : ""}">${item}</span>
+                </label>
+              `;
+            })
+            .join("");
+
+          return `
+            <article class="checklist-card glass" data-category="${category.key}">
+              <div class="checklist-head">
+                <h3>${category.title}</h3>
+                <span class="progress-meta">0 / ${category.items.length}</span>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill"></div>
+              </div>
+              <div class="checklist-items">
+                ${itemsMarkup}
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      function refreshCategory(card) {
+        const checkboxes = [...card.querySelectorAll("input[type='checkbox']")];
+        const done = checkboxes.filter((box) => box.checked).length;
+        const total = checkboxes.length;
+        const percent = total ? (done / total) * 100 : 0;
+        card.querySelector(".progress-meta").textContent = `${done} / ${total}`;
+        card.querySelector(".progress-fill").style.width = `${percent}%`;
+
+        checkboxes.forEach((box) => {
+          const labelText = box.nextElementSibling;
+          labelText.classList.toggle("done", box.checked);
+        });
+      }
+
+      [...grid.querySelectorAll(".checklist-card")].forEach((card) => refreshCategory(card));
+
+      grid.addEventListener("change", (event) => {
+        const input = event.target;
+        if (!(input instanceof HTMLInputElement) || input.type !== "checkbox") {
+          return;
+        }
+
+        const state = safeParse(storageKeys.packing, {});
+        state[input.dataset.itemId] = input.checked;
+        safeSet(storageKeys.packing, state);
+
+        const card = input.closest(".checklist-card");
+        if (card) {
+          refreshCategory(card);
+        }
+        updatePackingOverall();
+      });
+    }
+
+    function setupJournal() {
+      const textarea = document.getElementById("journal-input");
+      const indicator = document.getElementById("save-indicator");
+      const savedText = (() => {
+        try {
+          return window.localStorage.getItem(storageKeys.journal) || "";
+        } catch (error) {
+          return "";
+        }
+      })();
+
+      textarea.value = savedText;
+
+      let saveTimer = null;
+      textarea.addEventListener("input", () => {
+        indicator.textContent = "Saving";
+        window.clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(() => {
+          try {
+            window.localStorage.setItem(storageKeys.journal, textarea.value);
+          } catch (error) {
+            return;
+          }
+          indicator.textContent = "Saved";
+        }, 180);
+      });
+    }
+
+    function initMap() {
+      const mapEl = document.getElementById("trip-map");
+      if (!mapEl || !window.L) {
+        return;
+      }
+
+      const map = L.map(mapEl, {
+        attributionControl: false,
+        zoomControl: false,
+        scrollWheelZoom: false
+      });
+
+      L.control.zoom({ position: "topright" }).addTo(map);
+
+      const pointLookup = new Map(mapPoints.map((point) => [point.id, point]));
+      const routeLayers = mapRoutes.map((route) =>
+        L.polyline(
+          route.ids.map((id) => pointLookup.get(id).coords),
+          route.style
+        ).addTo(map)
+      );
+
+      mapPoints.forEach((point) => {
+        const marker = L.marker(point.coords, {
+          icon: L.divIcon({
+            className: "route-pin",
+            html: "<i></i><span>" + point.name + "</span>",
+            iconSize: [140, 42],
+            iconAnchor: [14, 14]
+          })
+        }).addTo(map);
+
+        marker.bindPopup("<strong>" + point.name + "</strong><br>" + point.note);
+      });
+
+      const bounds = L.featureGroup(routeLayers).getBounds();
+      map.fitBounds(bounds, {
+        padding: [50, 50]
+      });
+    }
+
+    function renderPhotos() {
+      const grid = document.getElementById("photos-grid");
+      if (!grid) return;
+      grid.innerHTML = photoLocations.map(function(loc) {
+        var mapsIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+        var photosIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+        var photosLink = "";
+        if (loc.photosUrl) {
+          photosLink = '<a class="photo-link" href="' + loc.photosUrl + '" target="_blank" rel="noreferrer">' + photosIcon + loc.photosLabel + '</a>';
+        } else {
+          photosLink = '<span class="photo-link" style="opacity:0.4;cursor:default;">' + photosIcon + 'Album coming soon</span>';
+        }
+        return '<article class="photo-card">' +
+          '<div class="photo-card-media" style="background-image:url(\'' + loc.img + '\')"></div>' +
+          '<div class="photo-card-body">' +
+            '<h3>' + loc.name + '</h3>' +
+            '<p>' + loc.description + '</p>' +
+            '<div class="photo-links">' +
+              '<a class="photo-link" href="' + loc.mapsUrl + '" target="_blank" rel="noreferrer">' + mapsIcon + 'View on Google Maps</a>' +
+              photosLink +
+            '</div>' +
+          '</div>' +
+        '</article>';
+      }).join("");
+    }
+
+    renderTimeline();
+
+    function initDepartureCountdown() {
+      const departure = new Date("2026-04-25T11:00:00").getTime();
+      const daysEl = document.getElementById("cd-days");
+      const hoursEl = document.getElementById("cd-hours");
+      const minsEl = document.getElementById("cd-mins");
+      const secsEl = document.getElementById("cd-secs");
+      const container = document.getElementById("countdown");
+
+      function tick() {
+        const now = Date.now();
+        const diff = Math.max(0, departure - now);
+
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+
+        const pad = (n) => String(n).padStart(2, "0");
+
+        function setVal(el, val) {
+          const newVal = pad(val);
+          if (el.textContent !== newVal) {
+            el.textContent = newVal;
+            el.classList.add("flip");
+            setTimeout(() => el.classList.remove("flip"), 300);
+          }
+        }
+
+        setVal(daysEl, days);
+        setVal(hoursEl, hours);
+        setVal(minsEl, mins);
+        setVal(secsEl, secs);
+
+        if (diff === 0) {
+          clearInterval(interval);
+          if (container) {
+            container.querySelector(".countdown-label").textContent = "Departed!";
+          }
+        }
+      }
+
+      tick();
+      const interval = setInterval(tick, 1000);
+    }
+
+    function updatePackingOverall() {
+      const allBoxes = document.querySelectorAll("#packing-grid input[type='checkbox']");
+      const total = allBoxes.length;
+      if (!total) return;
+      const done = [...allBoxes].filter((b) => b.checked).length;
+      const pct = Math.round((done / total) * 100);
+      const pctEl = document.getElementById("packing-pct");
+      const fillEl = document.getElementById("packing-fill");
+      const countEl = document.getElementById("packing-count");
+      if (pctEl) pctEl.textContent = pct + "%";
+      if (fillEl) fillEl.style.width = pct + "%";
+      if (countEl) countEl.textContent = done + " / " + total + " items packed";
+    }
+
+    renderTourDays();
+    renderCardSections();
+    renderPhotos();
+    setupAccordions();
+    setupReveals();
+    setupMobileNav();
+    setupActiveNav();
+    setupParallax();
+    renderPacking();
+    initDepartureCountdown();
+    updatePackingOverall();
+    setupJournal();
+    initMap();
+  </script>
+</body>
+</html>
