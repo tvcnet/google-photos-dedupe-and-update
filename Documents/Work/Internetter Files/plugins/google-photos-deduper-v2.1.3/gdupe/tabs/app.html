@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Google Photos Toolkit Hub</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/tabs/dashboard.css">
+</head>
+<body>
+    <div class="hub-container">
+        <!-- Card 1: Scan for Duplicates (Original Deduper) -->
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">
+                    <span style="font-size: 1.5rem;">📸</span> Scan for Duplicates
+                </h1>
+                <p class="card-subtitle">Local deduping engine v2.1.3</p>
+            </div>
+            <div id="__plasmo"></div>
+        </div>
+
+        <!-- Card 2: Photo Info Update (New Gemini Feature) -->
+        <div class="card" id="ai-card">
+            <div class="card-header">
+                <h1 class="card-title">
+                    <span style="font-size: 1.5rem;">✨</span> Photo Info Update
+                </h1>
+                <p class="card-subtitle">AI-powered metadata & descriptions</p>
+            </div>
+            
+            <!-- SETUP VIEW -->
+            <div id="setup-view" class="view-container">
+                <div class="input-group">
+                    <label class="label" for="gemini-api-key">Gemini API Key</label>
+                    <input type="password" id="gemini-api-key" class="input-field" placeholder="Paste your API key here...">
+                    <p style="font-size: 0.75rem; color: var(--sky-600); margin-top: 0.5rem;">
+                        Your key is stored locally and never leaves your browser.
+                    </p>
+                </div>
+                <button id="save-settings" class="btn">Save & Unlock Features</button>
+            </div>
+
+            <!-- FEATURES HUB VIEW -->
+            <div id="features-view" class="view-container" style="display: none;">
+                <div class="feature-grid">
+                    <div class="feature-tile" id="feature-ai-describe">
+                        <div class="feature-icon">📝</div>
+                        <div class="feature-info">
+                            <div class="feature-name">AI Descriptions</div>
+                            <div class="feature-desc">Auto-generate captions via Gemini 2.5</div>
+                        </div>
+                    </div>
+                    <div class="feature-tile disabled">
+                        <div class="feature-icon">📂</div>
+                        <div class="feature-info">
+                            <div class="feature-name">Smart Albums</div>
+                            <div class="feature-desc">Categorize by intent & content</div>
+                        </div>
+                    </div>
+                    <div class="feature-tile disabled">
+                        <div class="feature-icon">🧹</div>
+                        <div class="feature-info">
+                            <div class="feature-name">Metadata Cleanup</div>
+                            <div class="feature-desc">Fix dates & location tags</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-start">
+                    <h4>🚀 AI Descriptions Next Steps</h4>
+                    <p>1. Go to your <a href="https://photos.google.com" target="_blank" style="color: var(--sky-500); font-weight: 600; text-decoration: none;">Google Photos</a> tab.</p>
+                    <p>2. Click the <strong>GPTK</strong> icon in the top right menu.</p>
+                    <p>3. Select <strong>photos in an album</strong> and click <strong>"Describe with AI"</strong>.</p>
+                </div>
+
+                <button id="clear-key" class="btn-outline">Update API Key</button>
+            </div>
+
+            <div id="status-msg" class="status-msg"></div>
+        </div>
+    </div>
+
+    <!-- Original React App -->
+    <script src="/tabs/app.a1d14322.js" defer></script>
+    <!-- Custom Dashboard Logic -->
+    <script src="/tabs/dashboard.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+/* 
+ * dashboard.css
+ * Core styles for the Extension Hub using TVCNet Sky-Glass design.
+ */
+
+:root {
+    --sky-50: #f0f9ff;
+    --sky-100: #e0f2fe;
+    --sky-200: #bae6fd;
+    --sky-300: #7dd3fc;
+    --sky-400: #38bdf8;
+    --sky-500: #0ea5e9;
+    --sky-600: #0284c7;
+    --sky-700: #0369a1;
+    --sky-800: #075985;
+    --sky-900: #0c4a6e;
+    --sky-950: #082f49;
+
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: rgba(12, 74, 110, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--sky-50) 0%, var(--sky-200) 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: var(--sky-900);
+}
+
+.hub-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .hub-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(12, 74, 110, 0.15);
+}
+
+.card-header {
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--sky-950);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: var(--sky-700);
+    margin-top: 0.25rem;
+}
+
+/* Photo Info Update specific styles */
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--sky-800);
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    color: var(--sky-950);
+    transition: all 0.2s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    background: white;
+    border-color: var(--sky-500);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--sky-500);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn:hover {
+    background: var(--sky-600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.status-msg {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    min-height: 1.25rem;
+    transition: opacity 0.3s ease;
+}
+
+.status-success { color: #059669; }
+.status-error { color: #dc2626; }
+
+.view-container {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.feature-tile {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-tile:hover {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: var(--sky-400);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+}
+
+.feature-tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.feature-tile:hover::after {
+    left: 100%;
+}
+
+.feature-tile.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.feature-tile.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    background: white;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(12, 74, 110, 0.05);
+}
+
+.feature-info {
+    flex: 1;
+}
+
+.feature-name {
+    font-weight: 700;
+    color: var(--sky-950);
+    margin-bottom: 0.25rem;
+}
+
+.feature-desc {
+    font-size: 0.8rem;
+    color: var(--sky-700);
+}
+
+.quick-start {
+    background: rgba(14, 165, 233, 0.05);
+    border: 1px dashed var(--sky-300);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.quick-start h4 {
+    color: var(--sky-900);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-start p {
+    font-size: 0.85rem;
+    color: var(--sky-700);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.quick-start strong {
+    color: var(--sky-900);
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.25rem;
+    background: transparent;
+    color: var(--sky-600);
+    font-weight: 600;
+    border: 1.5px solid var(--sky-200);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+.btn-outline:hover {
+    background: rgba(14, 165, 233, 0.05);
+    border-color: var(--sky-400);
+    color: var(--sky-700);
+}
+
+/* Existing Deduper portal adjustment */
+#__plasmo {
+    width: 100%;
+}
