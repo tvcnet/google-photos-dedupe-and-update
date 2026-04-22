@@ -1,0 +1,422 @@
+/* 
+ * dashboard.css
+ * Core styles for the Extension Hub using TVCNet Sky-Glass design.
+ */
+
+:root {
+    --sky-50: #f0f9ff;
+    --sky-100: #e0f2fe;
+    --sky-200: #bae6fd;
+    --sky-300: #7dd3fc;
+    --sky-400: #38bdf8;
+    --sky-500: #0ea5e9;
+    --sky-600: #0284c7;
+    --sky-700: #0369a1;
+    --sky-800: #075985;
+    --sky-900: #0c4a6e;
+    --sky-950: #082f49;
+
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: rgba(12, 74, 110, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 35%, #7dd3fc 70%, #38bdf8 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: var(--sky-900);
+}
+
+.hub-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .hub-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 1.5rem;
+    padding: 2.25rem;
+    box-shadow: 0 8px 32px rgba(12, 74, 110, 0.1);
+    transition: transform var(--duration-fast, 0.2s) var(--ease, ease), 
+                box-shadow var(--duration-fast, 0.2s) var(--ease, ease),
+                border-color var(--duration-fast, 0.2s) var(--ease, ease);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(12, 74, 110, 0.18);
+}
+
+.card-header {
+    margin-bottom: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--sky-950);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: var(--sky-700);
+    margin-top: 0.25rem;
+}
+
+/* Photo Album Info Update specific styles */
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--sky-800);
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0.875rem;
+    font-size: 1rem;
+    color: var(--sky-950);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-field:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.7);
+    border-color: var(--sky-500);
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--sky-500);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn:hover::after { left: 100%; }
+
+.btn:hover {
+    background: var(--sky-600);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(14, 165, 233, 0.25);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.status-msg {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    min-height: 1.25rem;
+    transition: opacity 0.3s ease;
+}
+
+.status-success { color: #059669; }
+.status-error { color: #dc2626; }
+
+.view-container {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.feature-tile {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-tile:hover {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: var(--sky-400);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.12);
+}
+
+/* Shimmer sweep aligned to Sky-Glass reference */
+.feature-tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.feature-tile:hover::after {
+    left: 100%;
+}
+
+.feature-tile.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.feature-tile.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    background: white;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(12, 74, 110, 0.05);
+}
+
+.feature-info {
+    flex: 1;
+}
+
+.feature-name {
+    font-weight: 700;
+    color: var(--sky-950);
+    margin-bottom: 0.25rem;
+}
+
+.feature-desc {
+    font-size: 0.8rem;
+    color: var(--sky-700);
+}
+
+.quick-start {
+    background: rgba(14, 165, 233, 0.05);
+    border: 1px dashed var(--sky-300);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.quick-start h4 {
+    color: var(--sky-900);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-start p {
+    font-size: 0.85rem;
+    color: var(--sky-700);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.quick-start strong {
+    color: var(--sky-900);
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--sky-600);
+    font-weight: 600;
+    border: 1.5px solid var(--sky-200);
+    border-radius: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s var(--ease, ease);
+    width: 100%;
+    font-size: 0.875rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.1), transparent);
+    transition: left 0.5s var(--ease, ease);
+    pointer-events: none;
+}
+
+.btn-outline:hover::after { left: 100%; }
+
+.btn-outline:hover {
+    background: rgba(14, 165, 233, 0.05);
+    border-color: var(--sky-400);
+    color: var(--sky-800);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(12, 74, 110, 0.05);
+}
+
+/* Existing Deduper portal adjustment */
+#__plasmo {
+    width: 100%;
+}
+
+/* ================================================================
+   GPTK SKY-GLASS — KEYFRAMES
+   Replicated from TVCNet Social Toolkit reference aesthetic.
+   ================================================================ */
+@keyframes gptk-fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes gptk-status-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes gptk-sparkle-pop {
+    0%   { transform: scale(0) rotate(0deg);   opacity: 0; }
+    50%  { transform: scale(1.4) rotate(180deg); opacity: 1; }
+    100% { transform: scale(1) rotate(360deg); opacity: 0; }
+}
+@keyframes gptk-pulse {
+    0%,  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+    50%        { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+}
+@keyframes gptk-card-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.04); }
+    70%  { transform: scale(0.98); }
+    100% { transform: scale(1); }
+}
+
+/* === STAGGERED FADE-UP ENTRANCE === */
+.gptk-fade-up {
+    animation: gptk-fadeUp 0.5s ease-out both;
+}
+.gptk-fade-up-d1 { animation-delay: 0.07s; }
+.gptk-fade-up-d2 { animation-delay: 0.15s; }
+.gptk-fade-up-d3 { animation-delay: 0.22s; }
+
+/* === STATUS DOT (shows API key is active) === */
+.gptk-status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+    animation: gptk-pulse 2s ease-in-out infinite;
+}
+
+/* === STATUS MESSAGE TOAST === */
+.gptk-status-in {
+    animation: gptk-status-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* === SPARKLE PARTICLES === */
+.gptk-sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    font-size: 18px;
+    animation: gptk-sparkle-pop 0.65s ease-out forwards;
+}
+
+/* === CUSTOM SCROLLBAR (Sky-Glass reference style) === */
+.gptk-scrollbar::-webkit-scrollbar { width: 5px; }
+.gptk-scrollbar::-webkit-scrollbar-track {
+    background: rgba(12, 74, 110, 0.05);
+    border-radius: 10px;
+}
+.gptk-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(12, 74, 110, 0.15);
+    border-radius: 10px;
+}
+.gptk-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(12, 74, 110, 0.25);
+}
+
+/* ================================================================
+   ♿ ACCESSIBILITY — Respect reduced motion
+   Matches prefers-reduced-motion block in reference stylesheet.
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .btn::after,
+    .btn-outline::after,
+    .feature-tile::after { display: none; }
+    .btn:hover       { transform: none; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); }
+    .btn-outline:hover { transform: none; }
+    .gptk-fade-up    { animation: none; opacity: 1; }
+    .gptk-status-dot { animation: none; }
+}
