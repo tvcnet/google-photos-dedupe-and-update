@@ -1,15 +1,13 @@
 // ==UserScript==
 // @name        Google Photos Toolkit (GPTK)
-// @description Advanced AI toolkit for Google Photos. Deduplicate, organize, and generate intelligent descriptions with Gemini.
-// @version     3.0.0
-// @author      xob0t
-// @homepageURL https://github.com/xob0t/Google-Photos-Toolkit#readme
-// @supportURL  https://github.com/xob0t/Google-Photos-Toolkit/discussions
+// @description Advanced AI toolkit for Google Photos. Deduplicate, organize, and generate descriptions with Gemini or local Ollama.
+// @version     4.5.0
+// @author      Jim Walker, @TVCNet
+// @homepageURL https://github.com/tvcnet/gptk#readme
+// @supportURL  https://github.com/tvcnet/gptk/discussions
 // @match       *://photos.google.com/*
 // @license     MIT
-// @namespace   https://github.com/xob0t/Google-Photos-Toolkit
-// @icon        https://raw.githubusercontent.com/xob0t/Google-Photos-Toolkit/main/media/icon.png
-// @downloadURL https://github.com/xob0t/Google-Photos-Toolkit/releases/latest/download/google_photos_toolkit.user.js
+// @namespace   https://github.com/tvcnet/gptk
 // @run-at      body
 // @grant       GM_registerMenuCommand
 // @grant       unsafeWindow
@@ -18,25 +16,139 @@
 (function () {
     'use strict';
 
+    /**
+     * @typedef {Object} MediaItem
+     * @property {string} mediaKey
+     * @property {string} dedupKey
+     * @property {string} [fileName]
+     * @property {string} [description]
+     * @property {string} [descriptionFull]
+     * @property {number} [timestamp]
+     * @property {number} [creationTimestamp]
+     * @property {number} [size]
+     * @property {number} [resWidth]
+     * @property {number} [resHeight]
+     * @property {boolean} [isOriginalQuality]
+     * @property {boolean} [takesUpSpace]
+     * @property {boolean} [isFavorite]
+     * @property {boolean} [isArchived]
+     * @property {boolean} [isLivePhoto]
+     * @property {boolean} [isOwned]
+     * @property {boolean} [isPartialUpload]
+     * @property {string} [thumb]
+     * @property {Object} [geoLocation]
+     * @property {number[]} [geoLocation.coordinates]
+     * @property {number} [duration]
+     * @property {number} [timezoneOffset]
+     */
+
+    /**
+     * @typedef {Object} Album
+     * @property {string} mediaKey
+     * @property {string} title
+     * @property {number} [itemCount]
+     * @property {boolean} [isShared]
+     * @property {string} [authKey]
+     */
+
+    /**
+     * @typedef {Object} FilterSettings
+     * @property {string} [fileNameRegex]
+     * @property {string} [fileNameMatchType]
+     * @property {string} [searchQuery]
+     * @property {string} [descriptionRegex]
+     * @property {string} [descriptionMatchType]
+     * @property {string} [higherBoundarySize]
+     * @property {string} [lowerBoundarySize]
+     * @property {string} [minWidth]
+     * @property {string} [maxWidth]
+     * @property {string} [minHeight]
+     * @property {string} [maxHeight]
+     * @property {string} [quality]
+     * @property {string} [space]
+     * @property {string} [lowerBoundaryDate]
+     * @property {string} [higherBoundaryDate]
+     * @property {string} [intervalType]
+     * @property {string} [dateType]
+     * @property {string} [type]
+     * @property {string} [favorite]
+     * @property {boolean} [excludeFavorites]
+     * @property {string} [hasLocation]
+     * @property {string} [boundSouth]
+     * @property {string} [boundWest]
+     * @property {string} [boundNorth]
+     * @property {string} [boundEast]
+     * @property {string} [owned]
+     * @property {string} [uploadStatus]
+     * @property {string} [archived]
+     */
+
+    /**
+     * @typedef {Object} ApiSettings
+     * @property {number} maxConcurrentSingleApiReq
+     * @property {number} maxConcurrentBatchApiReq
+     * @property {number} operationSize
+     * @property {number} lockedFolderOpSize
+     * @property {number} infoSize
+     * @property {string} aiProvider
+     * @property {string} geminiApiKey - redacted in the page context
+     * @property {boolean} hasGeminiApiKey
+     * @property {number} geminiDelayMs
+     * @property {string} ollamaBaseUrl
+     * @property {string} ollamaModel
+     * @property {string[]} ollamaModels
+     * @property {number} ollamaDelayMs
+     * @property {string} ollamaApiKey - redacted in the page context
+     * @property {boolean} hasOllamaApiKey
+     */
+
     let extSettings = {};
     let extSettingsReady = false;
 
     function normalizeExtensionSettings(settings) {
-        return {
+        const normalized = {
             ...apiSettingsDefault,
             ...(settings ?? {}),
         };
+        if (!['gemini', 'ollama'].includes(normalized.aiProvider)) {
+            normalized.aiProvider = apiSettingsDefault.aiProvider;
+        }
+        if (!Array.isArray(normalized.ollamaModels)) {
+            normalized.ollamaModels = [];
+        }
+        return normalized;
     }
 
     function syncExtensionSettingsToPanel() {
-        const keyInput = document.querySelector('input[name="geminiApiKey"]');
-        if (keyInput && document.activeElement !== keyInput) {
-            keyInput.value = extSettings.geminiApiKey ?? '';
+        const providerInput = document.querySelector('select[name="aiProvider"]');
+        if (providerInput && document.activeElement !== providerInput) {
+            providerInput.value = extSettings.aiProvider ?? apiSettingsDefault.aiProvider;
         }
         const delayInput = document.querySelector('input[name="geminiDelayMs"]');
         if (delayInput && document.activeElement !== delayInput) {
             delayInput.value = String(extSettings.geminiDelayMs ?? apiSettingsDefault.geminiDelayMs);
         }
+        const ollamaBaseUrlInput = document.querySelector('select[name="ollamaBaseUrl"]');
+        if (ollamaBaseUrlInput && document.activeElement !== ollamaBaseUrlInput) {
+            ollamaBaseUrlInput.value = extSettings.ollamaBaseUrl ?? apiSettingsDefault.ollamaBaseUrl;
+        }
+        populateOllamaModelOptions(extSettings.ollamaModels ?? []);
+        const ollamaModelInput = document.querySelector('select[name="ollamaModel"]');
+        if (ollamaModelInput && document.activeElement !== ollamaModelInput) {
+            const currentModel = extSettings.ollamaModel ?? '';
+            if (currentModel && !(extSettings.ollamaModels ?? []).includes(currentModel)) {
+                const option = document.createElement('option');
+                option.value = currentModel;
+                option.textContent = currentModel;
+                ollamaModelInput.appendChild(option);
+            }
+            ollamaModelInput.value = currentModel;
+        }
+        const ollamaDelayInput = document.querySelector('input[name="ollamaDelayMs"]');
+        if (ollamaDelayInput && document.activeElement !== ollamaDelayInput) {
+            ollamaDelayInput.value = String(extSettings.ollamaDelayMs ?? apiSettingsDefault.ollamaDelayMs);
+        }
+        updateAiProviderSettingsVisibility();
     }
 
     // Request settings from extension storage via bridge
@@ -92,7 +204,7 @@
       <div class="panel-section">
         <div class="section-label">
           <span class="step-badge">1</span> Select Source
-          <span class="help-tooltip" title="Choose where the toolkit should find photos to process. You can select your full Library, an Album collection, or use Google's search engine to find specific items."> (?)</span>
+          <span class="help-tooltip" tabindex="0" data-help="Choose where the toolkit should find photos to process. You can select your full Library, an Album collection, or use Google's search engine to find specific items."> (?)</span>
         </div>
         <div class="sources">
           <div class="source">
@@ -144,7 +256,7 @@
       <div class="panel-section">
         <div class="section-label">
           <span class="step-badge">2</span> Filters
-          <span class="help-tooltip" title="Narrow down your selection. These rules let you target specific photos by date, resolution, file type, or even visual similarity before you run an action."> (?)</span>
+          <span class="help-tooltip" tabindex="0" data-help="Narrow down your selection. These rules let you target specific photos by date, resolution, file type, or even visual similarity before you run an action."> (?)</span>
           <div class="flex centered" title="Clear all applied filters and reset to default" id="filterResetButton">
             <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>
             Reset
@@ -228,6 +340,12 @@
         </fieldset></details>
 
         <details class="description"><summary>Description</summary><fieldset>
+          <div class="radio-group">
+            <label class="form-control"><input name="descriptionStatus" value="" type="radio" checked="checked"> Any</label>
+            <label class="form-control"><input name="descriptionStatus" value="has" type="radio"> Has Description</label>
+            <label class="form-control"><input name="descriptionStatus" value="missing" type="radio"> Missing Description</label>
+          </div>
+          <hr>
           <label class="form-control"><legend>Regex:</legend><input name="descriptionRegex" value="" type="input" placeholder="e.g. vacation"></label>
           <div class="radio-group">
             <label class="form-control"><input name="descriptionMatchType" value="include" type="radio" checked="checked"> Include</label>
@@ -243,6 +361,7 @@
 
         <details class="similarity"><summary>Similarity</summary>
           <fieldset><span class="filter-note">Finds and groups similar images together. Best used with action Add to Album.</span></fieldset>
+          <fieldset><label class="form-control checkbox-control"><input name="albumOnlyDedupe" value="true" type="checkbox"><span>Album-only dedupe</span></label></fieldset>
           <fieldset>
             <legend>Threshold</legend><div class="input-wrapper"><input name="similarityThreshold" type="number" placeholder="0.95" step="0.01" max="1" min="0"></div>
             <legend>Image height</legend><div class="input-wrapper"><input name="imageHeight" type="number" placeholder="Pixels" value="16"></div>
@@ -325,8 +444,17 @@
           <legend>API Operation Batch Size</legend><div class="input-wrapper"><input name="operationSize" value="250" max="500" min="1" type="number" required></div>
           <legend>Locked Folder API Operation Size</legend><div class="input-wrapper"><input name="lockedFolderOpSize" value="100" max="100" min="1" type="number" required></div>
           <legend>Bulk Info API Batch Size</legend><div class="input-wrapper"><input name="infoSize" value="5000" max="10000" min="1" type="number" required></div>
-          <legend>Gemini API Key</legend><div class="input-wrapper"><input name="geminiApiKey" value="" type="password" placeholder="Paste your Gemini API key here..."></div>
-          <legend>Gemini Delay Between Calls (ms)</legend><div class="input-wrapper"><input name="geminiDelayMs" value="4000" min="0" max="60000" type="number" required></div>
+          <legend style="position: relative; display: flex; align-items: center; gap: 8px;">Choose Your Model <span class="help-tooltip" tabindex="0" data-help="Select between cloud-based Gemini or a local Ollama model for AI features. To use Gemini, you must set your API key in the GPTK dashboard (accessible via the extension icon). Ollama runs locally on your machine for enhanced privacy."> (?)</span></legend><div class="input-wrapper"><select name="aiProvider"><option value="gemini">Gemini</option><option value="ollama">Ollama Local</option></select></div>
+          <div data-ai-provider-section="gemini">
+            <p class="settings-note">Gemini keys are stored in extension storage. Use the extension hub to save or clear the key.</p>
+            <legend>Gemini Delay Between Calls (ms)</legend><div class="input-wrapper"><input name="geminiDelayMs" value="4000" min="0" max="60000" type="number" required></div>
+          </div>
+          <div data-ai-provider-section="ollama">
+            <legend>Ollama Local Server</legend><div class="input-wrapper"><select name="ollamaBaseUrl"><option value="http://127.0.0.1:11434">http://127.0.0.1:11434</option><option value="http://localhost:11434">http://localhost:11434</option></select></div>
+            <legend>Ollama Model</legend><div class="input-wrapper"><select name="ollamaModel" id="ollamaModels"><option value="">Fetch a model...</option></select><button type="button" name="fetchOllamaModels">Fetch Models</button></div>
+            <p class="settings-note">Standard local Ollama does not require an API key. If a proxy key is already stored, GPTK uses it from extension storage without exposing it to Google Photos.</p>
+            <legend>Ollama Delay Between Calls (ms)</legend><div class="input-wrapper"><input name="ollamaDelayMs" value="1000" min="0" max="60000" type="number" required></div>
+          </div>
           <div class="settings-controls">
             <button name="save" type="submit" class="btn-primary">Save</button>
             <button name="default">Default</button>
@@ -342,33 +470,46 @@
       <div class="action-bar">
         <div class="section-label">
           <span class="step-badge">3</span> Choose Action
-          <span class="help-tooltip" title="Select what you want to do with the filtered photos. You can move them, toggle favorites, or use Gemini AI to generate descriptive captions."> (?)</span>
+          <span class="help-tooltip" tabindex="0" data-help="Select what you want to do with the filtered photos. You can move them, toggle favorites, or use your chosen AI model to generate descriptive captions."> (?)</span>
         </div>
-        <div class="action-buttons">
-          <button id="showExistingAlbumForm" title="Move the selected items into an existing Google Photos album">Add to Album</button>
-          <button id="showNewAlbumForm" title="Create a new album and move the selected items into it">New Album</button>
-          <button type="button" id="toArchive" title="Move the filtered photos into your Archive">Archive</button>
-          <button type="button" id="unArchive" title="Un-archive the filtered photos (return them to the main grid)">Un-Archive</button>
-          <button type="button" id="toFavorite" title="Mark the filtered photos as Favorites">Favorite</button>
-          <button type="button" id="unFavorite" title="Remove the Favorite status from the filtered photos">Un-Favorite</button>
-          <button type="button" id="lock" title="Move the filtered photos into your highly secure Locked Folder">Lock</button>
-          <button type="button" id="unLock" title="Remove the filtered photos from the Locked Folder">Unlock</button>
-          <button type="button" id="copyDescFromOther" title="Extract original EXIF caption metadata and copy it into the Google Photos description field">Copy EXIF Desc</button>
-          <button type="button" id="setDateFromFilename" title="Attempt to parse dates from the filename and update the photo's internal date metadata">Date from Name</button>
-          <button type="button" id="aiDescribe" title="Use Gemini AI to analyze the images and generate highly descriptive captions automatically">AI Describe</button>
+        <div class="action-categories">
+          <!-- Smart Albums & Organization -->
+          <div class="action-group">
+            <h4 class="action-group-title">📂 Smart Albums & Organization</h4>
+            <div class="action-buttons-grid">
+              <button id="showExistingAlbumForm" title="Move the selected items into an existing Google Photos album">Add to Album</button>
+              <button type="button" id="toArchive" title="Move the filtered photos into your Archive">Archive</button>
+              <button type="button" id="unArchive" title="Un-archive the filtered photos (return them to the main grid)">Un-Archive</button>
+              <button type="button" id="toFavorite" title="Mark the filtered photos as Favorites">Favorite</button>
+              <button type="button" id="unFavorite" title="Remove the Favorite status from the filtered photos">Un-Favorite</button>
+              <button type="button" id="lock" title="Move the filtered photos into your highly secure Locked Folder">Lock</button>
+              <button type="button" id="unLock" title="Remove the filtered photos from the Locked Folder">Unlock</button>
+            </div>
+          </div>
+
+          <!-- Metadata Cleanup -->
+          <div class="action-group">
+            <h4 class="action-group-title">🧹 Metadata Cleanup</h4>
+            <div class="action-buttons-grid">
+              <button type="button" id="setDateFromFilename" title="Attempt to parse dates from the filename and update the photo's internal date metadata">Date from Name</button>
+              <button type="button" id="copyDescFromOther" title="Extract original EXIF caption metadata and copy it into the Google Photos description field">Copy EXIF Desc</button>
+              <button type="button" id="clearDescriptions" title="Remove all descriptions from the filtered photos">Clear Descriptions</button>
+            </div>
+          </div>
+
+          <!-- AI Features -->
+          <div class="action-group">
+            <h4 class="action-group-title">✨ AI Features</h4>
+            <div class="action-buttons-grid">
+              <button type="button" id="aiDescribe" class="btn-ai" title="Use the selected AI provider to analyze images and generate descriptive captions automatically">AI Describe</button>
+            </div>
+          </div>
         </div>
         <div class="to-existing-container">
           <form id="toExistingAlbum" class="album-form" title="Select an existing album and add the currently filtered photos to it">
             <div class="refresh-albums svg-container" title="Fetch the latest list of your albums from Google Photos"><svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 -960 960 960" width="22"><path d="M482-160q-134 0-228-93t-94-227v-7l-64 64-56-56 160-160 160 160-56 56-64-64v7q0 100 70.5 170T482-240q26 0 51-6t49-18l60 60q-38 22-78 33t-82 11Zm278-161L600-481l56-56 64 64v-7q0-100-70.5-170T478-720q-26 0-51 6t-49 18l-60-60q38-22 78-33t82-11q134 0 228 93t94 227v7l64-64 56 56-160 160Z"/></svg></div>
             <select id="existingAlbum" class="dropdown albums-select" name="targetAlbumMediaKeyExisting" required><option value="">Press Refresh</option></select>
             <button type="submit" class="btn-primary">Add</button>
-          </form>
-          <button class="return" title="Return to the main list of actions">&larr; Back</button>
-        </div>
-        <div class="to-new-container">
-          <form id="toNewAlbum" class="album-form" title="Type a name to create a new album containing the currently filtered photos">
-            <input id="newAlbumName" type="text" placeholder="Album name..." required>
-            <button type="submit" class="btn-primary">Create</button>
           </form>
           <button class="return" title="Return to the main list of actions">&larr; Back</button>
         </div>
@@ -432,8 +573,6 @@
 `);
 
     var css = (`
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 /* ================================================================
    Google Photos Toolkit — TVCNet Sky Glass Theme
    ================================================================ */
@@ -541,7 +680,7 @@
     position: fixed; top: 4%; left: 50%; transform: translateX(-50%);
     width: 92%; bottom: 4%; min-height: 300px; max-width: 1280px; min-width: 300px;
     z-index: 500;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px; line-height: 1.4; padding: 0;
     display: none; flex-direction: column; cursor: default;
     border-radius: var(--radius-xl); color-scheme: light;
@@ -622,7 +761,7 @@
     button:not(:disabled):hover::after { left: 140%; }
     button:not(:disabled):active { background: var(--bg-surface-active); transform: scale(0.97); }
     button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-    button:disabled { background: var(--bg-raised); color: var(--text-disabled); border-color: transparent; cursor: not-allowed; opacity: 0.45; svg { opacity: 0.4; } }
+    button:disabled { background: var(--bg-surface); color: var(--text-primary); border-color: var(--border-default); cursor: not-allowed; opacity: 0.45; svg { opacity: 0.4; } }
     button.btn-primary { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); border-color: var(--border-accent); color: #fff; box-shadow: var(--shadow-accent); }
     button.btn-primary:not(:disabled):hover { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(14,165,233,0.35); }
     button.btn-primary:not(:disabled):active { transform: translateY(0) scale(0.98); }
@@ -632,7 +771,6 @@
         background: linear-gradient(135deg, rgba(14,165,233,0.18) 0%, rgba(2,132,199,0.12) 100%);
         border-color: var(--border-accent);
         color: var(--accent-hover);
-        font-weight: 600;
     }
     #aiDescribe:not(:disabled):hover {
         background: linear-gradient(135deg, rgba(14,165,233,0.28) 0%, rgba(2,132,199,0.20) 100%);
@@ -642,6 +780,21 @@
     #aiDescribe.running {
         background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
         border-color: var(--border-accent); color: #fff;
+        animation: pulse-running 2s infinite;
+    }
+    #clearDescriptions {
+        background: linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(220,38,38,0.08) 100%);
+        border-color: rgba(239,68,68,0.35);
+        color: #dc2626;
+    }
+    #clearDescriptions:not(:disabled):hover {
+        background: linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(220,38,38,0.16) 100%);
+        box-shadow: 0 4px 16px rgba(239,68,68,0.2);
+        transform: translateY(-1px);
+    }
+    #clearDescriptions.running {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border-color: rgba(239,68,68,0.5); color: #fff;
         animation: pulse-running 2s infinite;
     }
 
@@ -715,9 +868,9 @@
     .step-badge {
         display: inline-flex; align-items: center; justify-content: center;
         width: 20px; height: 20px; border-radius: 50%;
-        background: linear-gradient(135deg, #0ea5e9, #0284c7);
-        color: #fff; font-size: 11px; font-weight: 700; line-height: 1; flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(14,165,233,0.4);
+        background: #4ade80;
+        color: #000; font-size: 11px; font-weight: 700; line-height: 1; flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(74, 222, 128, 0.4);
     }
     .step-arrow { color: var(--text-tertiary); font-size: 14px; font-weight: 400; }
     #hide { cursor: pointer; fill: var(--text-tertiary); display: flex; align-items: center; padding: 4px; border-radius: var(--radius-sm); transition: all var(--duration-fast) var(--ease); }
@@ -728,9 +881,33 @@
        ============================================ */
     .panel-section { padding: 0; flex-shrink: 0; }
     .panel-section + .panel-section { border-top: 1px solid var(--border-subtle); padding-top: 2px; }
-    .section-label { display: flex; align-items: center; gap: 8px; padding: 10px 4px 8px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); user-select: none; }
-    .help-tooltip { cursor: help; color: var(--text-tertiary); font-size: 11px; margin-left: -2px; transition: color var(--duration-fast) var(--ease); font-weight: 400; }
-    .help-tooltip:hover { color: var(--accent); }
+    .section-label { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px 4px 8px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); user-select: none; }
+    .settings-note { margin: 6px 0 12px; color: var(--text-secondary); font-size: 11.5px; line-height: 1.45; }
+    .help-tooltip { position: static; cursor: pointer; color: var(--text-tertiary); font-size: 11px; margin-left: -2px; transition: color var(--duration-fast) var(--ease); font-weight: 400; outline: none; }
+    .help-tooltip:hover, .help-tooltip:focus { color: var(--accent); }
+    .help-tooltip::after { content: attr(data-help); position: absolute; top: calc(100% - 6px); left: 4px; right: 4px; transform: translateY(-5px); background: rgba(255, 255, 255, 0.98); color: var(--text-primary); padding: 10px 14px; border-radius: var(--radius-md); box-shadow: var(--shadow-panel); border: 1px solid var(--border-subtle); font-size: 12px; font-weight: 500; line-height: 1.4; white-space: normal; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease; pointer-events: none; text-align: left; text-transform: none; letter-spacing: normal; }
+    .help-tooltip:focus::after { opacity: 1; visibility: visible; transform: translateY(0); }
+    .gptk-toolbar-tooltip {
+        position: fixed;
+        z-index: 2147483647;
+        pointer-events: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: rgba(15, 23, 42, 0.94);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+        box-shadow: 0 10px 30px rgba(2, 8, 23, 0.32);
+        opacity: 0;
+        transform: translate(-50%, -6px);
+        transition: opacity 120ms ease, transform 120ms ease;
+    }
+    .gptk-toolbar-tooltip.is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
 
     /* ============================================
        SOURCE TABS
@@ -765,10 +942,10 @@
         backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
         user-select: none; border-bottom: 1px solid var(--border-subtle); min-height: 0; padding-top: 4px;
         .section-label { padding: 6px 12px 4px; }
-        .action-buttons { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 12px 8px; align-items: flex-start; }
-        .action-group { display: flex; flex-direction: column; gap: 4px; }
-        .action-group-label { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); padding-left: 2px; }
-        .action-group-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
+        .action-categories { display: flex; flex-direction: column; gap: 12px; padding: 4px 12px 12px; }
+        .action-group { display: flex; flex-direction: column; gap: 6px; }
+        .action-group-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); margin: 0; padding-left: 2px; }
+        .action-buttons-grid { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
         .to-existing-container,
         .to-new-container { display: none; flex-wrap: wrap; gap: 6px; padding: 8px 12px; align-items: center; }
         .album-form { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 0; }
@@ -993,6 +1170,11 @@
                 return `with description ${verb} regex "${f.descriptionRegex}"`;
             },
         },
+        // description status
+        { test: (f) => f.descriptionStatus === 'has', describe: () => 'with descriptions' },
+        { test: (f) => f.descriptionStatus === 'missing', describe: () => 'missing descriptions' },
+        // album-only dedupe
+        { test: (f) => f.albumOnlyDedupe === 'true', describe: () => 'using album-only dedupe' },
         // similarity
         {
             test: (f) => !!f.similarityThreshold,
@@ -1171,16 +1353,53 @@
         }
         return names;
     }
+    function getCurrentAlbumMediaKeyFromLocation() {
+        const match = window.location.pathname.match(/\/(?:album|share)\/([^/?#]+)/);
+        return match?.[1] ? decodeURIComponent(match[1]) : null;
+    }
+    function selectSource(sourceId) {
+        const sourceInput = document.getElementById(sourceId);
+        if (sourceInput instanceof HTMLInputElement && !sourceInput.disabled) {
+            sourceInput.checked = true;
+        }
+    }
+    function selectOnlyAlbumOption(albumMediaKey) {
+        const includeSelect = document.querySelector('select[name="albumsInclude"]');
+        if (!(includeSelect instanceof HTMLSelectElement) || !albumMediaKey) {
+            return false;
+        }
+        let found = false;
+        for (const option of includeSelect.options) {
+            const selected = option.value === albumMediaKey;
+            option.selected = selected;
+            found ||= selected;
+        }
+        if (found) {
+            includeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        return found;
+    }
+    function autoSelectCurrentAlbum(options = {}) {
+        const albumMediaKey = getCurrentAlbumMediaKeyFromLocation();
+        if (!albumMediaKey || !selectOnlyAlbumOption(albumMediaKey)) {
+            return false;
+        }
+        if (options.switchSource !== false) {
+            selectSource('albums');
+        }
+        return true;
+    }
 
-    function getFormData(selector) {
+    function getFormData(selector, options = {}) {
         const form = {};
         const formElement = document.querySelector(selector);
         if (!formElement)
             return form;
+        const includeEmpty = options.includeEmpty === true;
         const formData = new FormData(formElement);
         for (const [key, value] of formData) {
             const strValue = String(value);
-            if (strValue) {
+            if (strValue || includeEmpty) {
                 // Check if the key already exists in the form object
                 if (Reflect.has(form, key)) {
                     // If the value is not an array, make it an array
@@ -1534,10 +1753,6 @@
         }
     });
 
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
-    // Raw RPC responses from Google's batchexecute endpoint are untyped JSON.
-    // The no-unsafe-* rules are expected for this low-level API layer.
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     /**
      * Low-level client for Google Photos' undocumented `batchexecute` RPC API.
      *
@@ -1550,6 +1765,19 @@
      * ```
      */
     class Api {
+        /**
+         * Helper to perform a low-level WIZ API request with optional parsing and error handling.
+         * Consolidates duplicate boilerplate from individual API methods.
+         */
+        async _call(rpcid, requestData, parseResponse = false, methodName = 'API') {
+            try {
+                const response = await this.makeApiRequest(rpcid, requestData);
+                return parseResponse ? parser(response, rpcid) : response;
+            } catch (error) {
+                console.error(`Error in ${methodName}:`, error);
+                throw error;
+            }
+        }
         /**
          * Core RPC request with retry and response validation.
          *
@@ -1605,11 +1833,20 @@
                     }
                     try {
                         const parsedData = JSON.parse(jsonLines[0]);
+                        // parsedData structure is typically [["rpcid", "stringified_payload", null, "generic"]]
+                        // If index 2 is missing, it means the RPC itself didn't return a payload.
+                        // This happens on auth errors, rate limits, or item-specific failures.
                         if (!parsedData?.[0]?.[2]) {
-                            throw new Error('Missing payload in parsed response');
+                            const errorCode = parsedData?.[0]?.[1];
+                            const errorMsg = `Missing payload in parsed response (RPC: ${rpcid}, Google Error Code: ${errorCode ?? 'none'})`;
+                            console.error(`GPTK Debug: ${errorMsg}. Full envelope:`, jsonLines[0]);
+                            throw new Error(errorMsg);
                         }
                         return JSON.parse(parsedData[0][2]);
                     } catch (e) {
+                        if (e.message.includes('Missing payload')) {
+                            throw e;
+                        }
                         console.error('GPTK Error: Failed to parse RPC payload inside wrb.fr envelope. Payload start:', String(jsonLines[0]).substring(0, 100));
                         throw e;
                     }
@@ -1621,7 +1858,16 @@
                     lastError = error instanceof Error ? error : new Error(String(error));
                     console.error(`Error in ${rpcid} request (attempt ${attempt}/${Api.MAX_RETRIES}):`, lastError.message);
                     if (attempt < Api.MAX_RETRIES) {
-                        const delay = Api.RETRY_BASE_DELAY_MS * attempt;
+                        // If it's a 'Missing payload' error, it's likely a rate limit.
+                        // Wait significantly longer (base 4s, 8s).
+                        const isThrottled = lastError.message.includes('Missing payload');
+                        const multiplier = isThrottled ? 2 : 1;
+                        const delay = Api.RETRY_BASE_DELAY_MS * attempt * multiplier;
+                        
+                        if (isThrottled) {
+                            console.warn(`GPTK: Google throttling detected (Missing payload). Retrying in ${delay/1000}s...`);
+                        }
+                        
                         await new Promise((resolve) => setTimeout(resolve, delay));
                     }
                 }
@@ -1650,16 +1896,7 @@
                 sourceCode = 3; // both
             const rpcid = 'lcxiM';
             const requestData = [pageId, timestamp, pageSize, null, 1, sourceCode];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getItemsByTakenDate:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getItemsByTakenDate');
         }
         /**
          * Retrieve library items ordered by upload date (newest first).
@@ -1671,16 +1908,7 @@
         async getItemsByUploadedDate(pageId = null, parseResponse = true) {
             const rpcid = 'EzkLib';
             const requestData = ['', [[4, 'ra', 0, 0]], pageId];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getItemsByUploadedDate:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getItemsByUploadedDate');
         }
         /**
          * Search the library with a text query (same as the Google Photos search bar).
@@ -1693,16 +1921,7 @@
         async search(searchQuery, pageId = null, parseResponse = true) {
             const rpcid = 'EzkLib';
             const requestData = [searchQuery, null, pageId];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in search:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'search');
         }
         /**
          * Find remote media items that match the given file hashes.
@@ -1714,16 +1933,7 @@
         async getRemoteMatchesByHash(hashArray, parseResponse = true) {
             const rpcid = 'swbisb';
             const requestData = [hashArray, null, 3, 0];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getRemoteMatchesByHash:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getRemoteMatchesByHash');
         }
         /**
          * Retrieve items marked as favorites.
@@ -1735,16 +1945,7 @@
         async getFavoriteItems(pageId = null, parseResponse = true) {
             const rpcid = 'EzkLib';
             const requestData = ['Favorites', [[5, '8', 0, 9]], pageId];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getFavoriteItems:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getFavoriteItems');
         }
         /**
          * Retrieve items in the Locked Folder.
@@ -1759,16 +1960,7 @@
         async getLockedFolderItems(pageId = null, parseResponse = true) {
             const rpcid = 'nMFwOc';
             const requestData = [pageId];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getLockedFolderItems:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getLockedFolderItems');
         }
         /**
          * Retrieve all shared links created by the current user.
@@ -1780,16 +1972,7 @@
         async getSharedLinks(pageId = null, parseResponse = true) {
             const rpcid = 'F2A0H';
             const requestData = [pageId, null, 2, null, 3];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getSharedLinks:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getSharedLinks');
         }
         /**
          * Retrieve the user's albums.
@@ -1802,16 +1985,7 @@
         async getAlbums(pageId = null, pageSize = 100, parseResponse = true) {
             const rpcid = 'Z5xsfc';
             const requestData = [pageId, null, null, null, 1, null, null, pageSize, [2], 5];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getAlbums:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getAlbums');
         }
         /**
          * Retrieve a page of items from an album or shared link.
@@ -1825,16 +1999,7 @@
         async getAlbumPage(albumMediaKey, pageId = null, authKey = null, parseResponse = true) {
             const rpcid = 'snAcKc';
             const requestData = [albumMediaKey, pageId, null, authKey];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getAlbumPage:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getAlbumPage');
         }
         /**
          * Remove items from an album (does not delete them from the library).
@@ -1845,14 +2010,7 @@
         async removeItemsFromAlbum(itemAlbumMediaKeyArray) {
             const rpcid = 'ycV3Nd';
             const requestData = [itemAlbumMediaKeyArray];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in removeItemsFromAlbum:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'removeItemsFromAlbum');
         }
         /**
          * Create a new empty album.
@@ -1863,14 +2021,8 @@
         async createAlbum(albumName) {
             const rpcid = 'OXvT9d';
             const requestData = [albumName, null, 2];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response?.[0]?.[0];
-            }
-            catch (error) {
-                console.error('Error in createAlbum:', error);
-                throw error;
-            }
+            const response = await this._call(rpcid, requestData, false, 'createAlbum');
+            return response?.[0]?.[0];
         }
         /**
          * Add items to an existing (non-shared) album, or create a new one.
@@ -1884,19 +2036,8 @@
          */
         async addItemsToAlbum(mediaKeyArray, albumMediaKey = null, albumName = null) {
             const rpcid = 'E1Cajb';
-            let requestData = null;
-            if (albumName)
-                requestData = [mediaKeyArray, null, albumName];
-            else if (albumMediaKey)
-                requestData = [mediaKeyArray, albumMediaKey];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in addItemsToAlbum:', error);
-                throw error;
-            }
+            const requestData = albumName ? [mediaKeyArray, null, albumName] : [mediaKeyArray, albumMediaKey];
+            return this._call(rpcid, requestData, false, 'addItemsToAlbum');
         }
         /**
          * Add items to a shared album, or create a new shared album.
@@ -1910,19 +2051,10 @@
          */
         async addItemsToSharedAlbum(mediaKeyArray, albumMediaKey = null, albumName = null) {
             const rpcid = 'laUYf';
-            let requestData = null;
-            if (albumName)
-                requestData = [mediaKeyArray, null, albumName];
-            else if (albumMediaKey)
-                requestData = [albumMediaKey, [2, null, mediaKeyArray.map((id) => [[id]]), null, null, null, [1]]];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in addItemsToSharedAlbum:', error);
-                throw error;
-            }
+            const requestData = albumName
+                ? [mediaKeyArray, null, albumName]
+                : [albumMediaKey, [2, null, mediaKeyArray.map((id) => [[id]]), null, null, null, [1]]];
+            return this._call(rpcid, requestData, false, 'addItemsToSharedAlbum');
         }
         /**
          * Reorder items within an album.
@@ -1935,21 +2067,10 @@
         async setAlbumItemOrder(albumMediaKey, albumItemKeys, insertAfter = null) {
             const rpcid = 'QD9nKf';
             const albumItemKeysArray = albumItemKeys.map((item) => [[item]]);
-            let requestData;
-            if (insertAfter) {
-                requestData = [albumMediaKey, null, 3, null, albumItemKeysArray, [[insertAfter]]];
-            }
-            else {
-                requestData = [albumMediaKey, null, 1, null, albumItemKeysArray];
-            }
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in setAlbumItemOrder:', error);
-                throw error;
-            }
+            const requestData = insertAfter
+                ? [albumMediaKey, null, 3, null, albumItemKeysArray, [[insertAfter]]]
+                : [albumMediaKey, null, 1, null, albumItemKeysArray];
+            return this._call(rpcid, requestData, false, 'setAlbumItemOrder');
         }
         /**
          * Set or unset the favorite flag on items.
@@ -1959,18 +2080,11 @@
          * @returns The API response.
          */
         async setFavorite(dedupKeyArray, action = true) {
+            const rpcid = 'Ftfh0';
             const actionCode = action ? 1 : 2;
             const mappedKeys = dedupKeyArray.map((item) => [null, item]);
-            const rpcid = 'Ftfh0';
             const requestData = [mappedKeys, [actionCode]];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in setFavorite:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'setFavorite');
         }
         /**
          * Archive or unarchive items.
@@ -1980,18 +2094,40 @@
          * @returns The API response.
          */
         async setArchive(dedupKeyArray, action = true) {
+            const rpcid = 'w7TP3c';
             const actionCode = action ? 1 : 2;
             const mappedKeys = dedupKeyArray.map((item) => [null, [actionCode], [null, item]]);
-            const rpcid = 'w7TP3c';
             const requestData = [mappedKeys, null, 1];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in setArchive:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'setArchive');
+        }
+        /**
+         * Move items to the trash.
+         *
+         * Used by the legacy deduper command bridge. Keep this low-level API
+         * method even if the in-page album-update panel does not expose Trash.
+         *
+         * @param dedupKeyArray - Array of dedup keys identifying the items.
+         * @returns The API response status.
+         */
+        async moveItemsToTrash(dedupKeyArray) {
+            const rpcid = 'XwAOJf';
+            const requestData = [null, 1, dedupKeyArray, 3];
+            const response = await this._call(rpcid, requestData, false, 'moveItemsToTrash');
+            return response?.[0] ?? response;
+        }
+        /**
+         * Restore items from the trash back to the library.
+         *
+         * Used by the legacy deduper command bridge.
+         *
+         * @param dedupKeyArray - Array of dedup keys identifying the trashed items.
+         * @returns The API response status.
+         */
+        async restoreFromTrash(dedupKeyArray) {
+            const rpcid = 'XwAOJf';
+            const requestData = [null, 3, dedupKeyArray, 2];
+            const response = await this._call(rpcid, requestData, false, 'restoreFromTrash');
+            return response?.[0] ?? response;
         }
         /**
          * Move items into the Locked Folder.
@@ -2002,14 +2138,7 @@
         async moveToLockedFolder(dedupKeyArray) {
             const rpcid = 'StLnCe';
             const requestData = [dedupKeyArray, []];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in moveToLockedFolder:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'moveToLockedFolder');
         }
         /**
          * Remove items from the Locked Folder back to the library.
@@ -2020,14 +2149,7 @@
         async removeFromLockedFolder(dedupKeyArray) {
             const rpcid = 'Pp2Xxe';
             const requestData = [dedupKeyArray];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in removeFromLockedFolder:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'removeFromLockedFolder');
         }
         /**
          * Get the current Google account's storage quota.
@@ -2038,16 +2160,7 @@
         async getStorageQuota(parseResponse = true) {
             const rpcid = 'EzwWhf';
             const requestData = [];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getStorageQuota:', error); // Fixed: was "getDownloadUrl"
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getStorageQuota');
         }
         /**
          * Get download URLs for one or more media items.
@@ -2059,14 +2172,8 @@
         async getDownloadUrl(mediaKeyArray, authKey = null) {
             const rpcid = 'pLFTfd';
             const requestData = [mediaKeyArray, null, authKey];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response[0];
-            }
-            catch (error) {
-                console.error('Error in getDownloadUrl:', error);
-                throw error;
-            }
+            const response = await this._call(rpcid, requestData, false, 'getDownloadUrl');
+            return response[0];
         }
         /**
          * Request a download token for bulk-downloading items as a zip archive.
@@ -2080,14 +2187,8 @@
             const rpcid = 'yCLA7';
             const mappedKeys = mediaKeyArray.map((id) => [id]);
             const requestData = [mappedKeys];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response[0];
-            }
-            catch (error) {
-                console.error('Error in getDownloadToken:', error);
-                throw error;
-            }
+            const response = await this._call(rpcid, requestData, false, 'getDownloadToken');
+            return response[0];
         }
         /**
          * Check the status of a bulk download token.
@@ -2101,16 +2202,7 @@
         async checkDownloadToken(dlToken, parseResponse = true) {
             const rpcid = 'dnv2s';
             const requestData = [[dlToken]];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in checkDownloadToken:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'checkDownloadToken');
         }
         /**
          * Remove items from a shared album.
@@ -2126,14 +2218,7 @@
                 [mediaKeyArray],
                 [[null, null, null, [null, [], []], null, null, null, null, null, null, null, null, null, []]],
             ];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in removeItemsFromSharedAlbum:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'removeItemsFromSharedAlbum');
         }
         /**
          * Save shared album media to your own library.
@@ -2145,14 +2230,7 @@
         async saveSharedMediaToLibrary(albumMediaKey, mediaKeyArray) {
             const rpcid = 'V8RKJ';
             const requestData = [mediaKeyArray, null, albumMediaKey];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in saveSharedMediaToLibrary:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'saveSharedMediaToLibrary');
         }
         /**
          * Save partner-shared media to your own library.
@@ -2164,14 +2242,7 @@
             const rpcid = 'Es7fke';
             const mappedKeys = mediaKeyArray.map((id) => [id]);
             const requestData = [mappedKeys];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in savePartnerSharedMediaToLibrary:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'savePartnerSharedMediaToLibrary');
         }
         /**
          * Retrieve media shared by a partner (partner sharing feature).
@@ -2185,16 +2256,7 @@
         async getPartnerSharedMedia(partnerActorId, gaiaId, pageId, parseResponse = true) {
             const rpcid = 'e9T5je';
             const requestData = [pageId, null, [null, [[[2, 1]]], [partnerActorId], [null, gaiaId], 1]];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getPartnerSharedMedia:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getPartnerSharedMedia');
         }
         /**
          * Set geographic location data on one or more items.
@@ -2211,14 +2273,7 @@
             const rpcid = 'EtUHOe';
             const mappedKeys = dedupKeyArray.map((dedupKey) => [null, dedupKey]);
             const requestData = [mappedKeys, [2, center, [visible1, visible2], [null, null, scale], gMapsPlaceId]];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in setItemGeoData:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'setItemGeoData');
         }
         /**
          * Remove geographic location data from one or more items.
@@ -2230,14 +2285,7 @@
             const rpcid = 'EtUHOe';
             const mappedKeys = dedupKeyArray.map((dedupKey) => [null, dedupKey]);
             const requestData = [mappedKeys, [1]];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in deleteItemGeoData:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'deleteItemGeoData');
         }
         /**
          * Change the date/time of media items in bulk.
@@ -2248,14 +2296,7 @@
         async setItemsTimestamp(items) {
             const rpcid = 'DaSgWe';
             const requestData = [items.map((item) => [item.dedupKey, item.timestampSec, item.timezoneSec])];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in setItemsTimestamp:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'setItemsTimestamp');
         }
         /**
          * Set or update the description of a media item.
@@ -2267,14 +2308,7 @@
         async setItemDescription(dedupKey, description) {
             const rpcid = 'AQNOFd';
             const requestData = [null, description, dedupKey];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in setItemDescription:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, false, 'setItemDescription');
         }
         /**
          * Get basic info for a single media item.
@@ -2290,16 +2324,7 @@
         async getItemInfo(mediaKey, albumMediaKey = null, authKey = null, parseResponse = true) {
             const rpcid = 'VrseUb';
             const requestData = [mediaKey, null, authKey, null, albumMediaKey];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getItemInfo:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getItemInfo');
         }
         /**
          * Get extended info for a single media item.
@@ -2315,16 +2340,7 @@
         async getItemInfoExt(mediaKey, authKey = null, parseResponse = true) {
             const rpcid = 'fDcn4b';
             const requestData = [mediaKey, 1, authKey, null, 1];
-            try {
-                const response = await this.makeApiRequest(rpcid, requestData);
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getItemInfoExt:', error);
-                throw error;
-            }
+            return this._call(rpcid, requestData, parseResponse, 'getItemInfoExt');
         }
         /**
          * Get media info for multiple items in a single request.
@@ -2341,17 +2357,9 @@
             const mappedKeys = mediaKeyArray.map((id) => [id]);
             // prettier-ignore
             const requestData = [[[mappedKeys], [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, [], null, null, null, null, null, null, null, null, null, null, []]]]];
-            try {
-                let response = await this.makeApiRequest(rpcid, requestData);
-                response = response?.[0]?.[1];
-                if (parseResponse)
-                    return parser(response, rpcid);
-                return response;
-            }
-            catch (error) {
-                console.error('Error in getBatchMediaInfo:', error);
-                throw error;
-            }
+            const response = await this._call(rpcid, requestData, false, 'getBatchMediaInfo');
+            const data = response?.[0]?.[1];
+            return parseResponse ? parser(data, rpcid) : data;
         }
     }
     Api.MAX_RETRIES = 3;
@@ -2417,13 +2425,6 @@
     }
 
     /**
-     * Fetch an image URL and call the Gemini Vision API to generate a description.
-     *
-     * @param apiKey - Gemini API key from user settings.
-     * @param imageUrl - URL of the image to analyze (Google Photos thumbnail).
-     * @returns The generated description string, or null on failure.
-     */
-    /**
      * Fetch an image URL via the bridge content script (ISOLATED world), which
      * is not subject to the CORS restrictions that block direct fetch() calls
      * from the injected MAIN-world toolkit script.
@@ -2460,57 +2461,118 @@
         });
     }
 
-    async function callGeminiVision(apiKey, imageUrl) {
-        // Fetch the image via the bridge (bypasses MAIN-world CORS restrictions)
-        const { base64, mimeType } = await fetchImageViaBridge(imageUrl);
-
-        // Call Gemini generateContent API
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
-        const body = {
-            contents: [{
-                parts: [
-                    {
-                        inline_data: {
-                            mime_type: mimeType,
-                            data: base64,
-                        },
-                    },
-                    {
-                        text: 'Describe this photo in 1-2 natural sentences suitable for a photo caption. Focus on the scene, subjects, and setting. Be concise and factual.',
-                    },
-                ],
-            }],
-        };
-
-        const geminiResponse = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+    function fetchAiDescriptionViaBridge(provider, imageUrl, timeoutMs = 120000) {
+        return new Promise((resolve, reject) => {
+            const requestId = `ai-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+            const timer = setTimeout(() => {
+                window.removeEventListener('message', handler);
+                reject(new Error('AI description request timed out'));
+            }, timeoutMs);
+            function handler(e) {
+                if (e.source !== window) return;
+                const msg = e.data;
+                if (msg?.app === 'GPD' && msg.action === 'gptkAiDescribeResult' && msg.requestId === requestId) {
+                    clearTimeout(timer);
+                    window.removeEventListener('message', handler);
+                    if (msg.error) {
+                        reject(new Error(msg.error));
+                    }
+                    else {
+                        const text = msg.data?.text?.trim();
+                        if (!text) {
+                            reject(new Error('AI provider returned no text'));
+                            return;
+                        }
+                        resolve(text);
+                    }
+                }
+            }
+            window.addEventListener('message', handler);
+            window.postMessage({ app: 'GPD', action: 'gptkAiDescribeRequest', requestId, provider, imageUrl }, '*');
         });
-
-        if (!geminiResponse.ok) {
-            const err = await geminiResponse.text();
-            throw new Error(`Gemini API error ${geminiResponse.status}: ${err}`);
-        }
-
-        const data = await geminiResponse.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (!text) throw new Error('Gemini returned no text');
-        return text;
     }
 
-    // FIX #4: Default settings now include both maxConcurrentSingleApiReq and
-    // maxConcurrentBatchApiReq instead of the single mismatched key "maxConcurrentApiReq"
+    async function callGeminiVision(imageUrl) {
+        return await fetchAiDescriptionViaBridge('gemini', imageUrl);
+    }
+
+    function fetchOllamaViaBridge(request, timeoutMs = 90000) {
+        return new Promise((resolve, reject) => {
+            const requestId = `ollama-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+            const timer = setTimeout(() => {
+                window.removeEventListener('message', handler);
+                reject(new Error('Ollama request timed out'));
+            }, timeoutMs);
+            function handler(e) {
+                if (e.source !== window) return;
+                const msg = e.data;
+                if (msg?.app === 'GPD' && msg.action === 'gptkOllamaResult' && msg.requestId === requestId) {
+                    clearTimeout(timer);
+                    window.removeEventListener('message', handler);
+                    if (msg.error) {
+                        reject(new Error(msg.error));
+                    }
+                    else {
+                        resolve(msg.data);
+                    }
+                }
+            }
+            window.addEventListener('message', handler);
+            window.postMessage({ app: 'GPD', action: 'gptkOllamaRequest', requestId, request }, '*');
+        });
+    }
+
+    async function fetchOllamaModels(settings) {
+        const data = await fetchOllamaViaBridge({
+            baseUrl: settings.ollamaBaseUrl,
+            path: '/api/tags',
+            method: 'GET',
+            timeoutMs: 15000,
+        }, 20000);
+        return Array.isArray(data?.models) ? data.models.map((model) => model.name).filter(Boolean) : [];
+    }
+
+    async function callOllamaVision(settings, imageUrl) {
+        const model = String(settings.ollamaModel ?? '').trim();
+        if (!model) {
+            throw new Error('Ollama model is not selected');
+        }
+        return await fetchAiDescriptionViaBridge('ollama', imageUrl);
+    }
+
+    async function callAiDescription(settings, imageUrl) {
+        const provider = settings?.aiProvider ?? apiSettingsDefault.aiProvider;
+        if (provider === 'ollama') {
+            if (!settings?.ollamaBaseUrl || !settings?.ollamaModel) {
+                throw new Error('Ollama server URL and model are required');
+            }
+            return await callOllamaVision(settings, imageUrl);
+        }
+        if (!settings?.hasGeminiApiKey && !settings?.geminiApiKey) {
+            throw new Error('No Gemini API key set');
+        }
+        return await callGeminiVision(imageUrl);
+    }
+
+    // Default settings
     const apiSettingsDefault = {
         maxConcurrentSingleApiReq: 3,
         maxConcurrentBatchApiReq: 3,
         operationSize: 250,
         lockedFolderOpSize: 100,
         infoSize: 5000,
+        aiProvider: 'gemini',
         geminiApiKey: '',
+        hasGeminiApiKey: false,
         // Minimum delay between Gemini API calls (ms). Keeps usage under the
         // free-tier 15 RPM cap (1 req / 4 s = 15 RPM). Raise if you see 429s.
         geminiDelayMs: 4000,
+        ollamaBaseUrl: 'http://127.0.0.1:11434',
+        ollamaModel: '',
+        ollamaModels: [],
+        ollamaDelayMs: 1000,
+        ollamaApiKey: '',
+        hasOllamaApiKey: false,
     };
 
     /**
@@ -2889,9 +2951,8 @@
                     nextPageId = page?.nextPageId;
                 }
                 catch (error) {
-                    log(`Error fetching page, skipping: ${error instanceof Error ? error.message : String(error)}`, 'error');
-                    // Stop pagination — we can't get nextPageId from a failed request
-                    break;
+                    console.error('Error fetching page:', error);
+                    throw error;
                 }
             } while (nextPageId);
             return items;
@@ -3012,7 +3073,6 @@
         async sendToArchive(mediaItems) {
             log(`Sending ${mediaItems.length} items to archive`);
             const filtered = mediaItems.filter((item) => item?.isArchived !== true);
-            // FIX #5: Use .length check — empty array is truthy
             if (filtered.length === 0) {
                 log('All target items are already archived');
                 return;
@@ -3028,7 +3088,6 @@
         async unArchive(mediaItems) {
             log(`Removing ${mediaItems.length} items from archive`);
             const filtered = mediaItems.filter((item) => item?.isArchived !== false);
-            // FIX #5: Use .length check — empty array is truthy
             if (filtered.length === 0) {
                 log('All target items are not archived');
                 return;
@@ -3044,7 +3103,6 @@
         async setAsFavorite(mediaItems) {
             log(`Setting ${mediaItems.length} items as favorite`);
             const filtered = mediaItems.filter((item) => item?.isFavorite !== true);
-            // FIX #5: Use .length check — empty array is truthy
             if (filtered.length === 0) {
                 log('All target items are already favorite');
                 return;
@@ -3060,7 +3118,6 @@
         async unFavorite(mediaItems) {
             log(`Removing ${mediaItems.length} items from favorites`);
             const filtered = mediaItems.filter((item) => item?.isFavorite !== false);
-            // FIX #5: Use .length check — empty array is truthy
             if (filtered.length === 0) {
                 log('All target items are not favorite');
                 return;
@@ -3135,25 +3192,7 @@
                 }
             }
         }
-        /**
-         * Create a new album and add items to it.
-         *
-         * Supports overflow: if items exceed 20,000, additional numbered albums are created.
-         *
-         * @param mediaItems - Array of media items to add.
-         * @param targetAlbumName - The name for the new album.
-         * @param preserveOrder - When `true`, reorders album items to match the input order.
-         */
-        async addToNewAlbum(mediaItems, targetAlbumName, preserveOrder = false) {
-            log(`Creating new album "${targetAlbumName}"`);
-            const album = {
-                title: targetAlbumName,
-                isShared: false,
-                mediaKey: await this.api.createAlbum(targetAlbumName),
-                itemCount: 0,
-            };
-            await this.addToExistingAlbum(mediaItems, album, preserveOrder);
-        }
+
         /**
          * Get media info (filename, size, quality, etc.) for items in concurrent batches.
          *
@@ -3232,85 +3271,174 @@
             log(`Copied ${results.filter(Boolean).length} descriptions from 'Other' field`);
         }
         /**
-         * Generate and set an AI description for a single media item using Gemini Vision.
+         * Generate and set an AI description for a single media item.
          *
          * Skips items that already have a description. Fetches the photo thumbnail,
-         * sends it to Gemini 2.5 Flash-Lite, and writes the result to Google Photos.
-         * After a successful write, waits `geminiDelayMs` milliseconds before returning
-         * so the caller (executeWithConcurrency) naturally paces requests and avoids
-         * hitting the Gemini free-tier 15 RPM rate limit (429 Too Many Requests).
+         * sends it to the selected AI provider, and writes the result to Google Photos.
+         * After a successful write, waits the provider-specific delay before returning
+         * so the caller naturally paces requests.
          *
          * @param mediaItems - Single-element array (required by executeWithConcurrency).
          * @returns [true] if description was set, [false] if skipped or errored.
          */
-        async aiDescribeOneItem(mediaItems) {
+        async aiDescribeOneItem(mediaItems, index = 1, total = 1) {
             try {
                 const item = mediaItems[0];
-                // Get stored Gemini API key and per-call delay
                 const settings = getFromStorage('apiSettings');
-                const apiKey = settings?.geminiApiKey ?? '';
-                if (!apiKey) {
-                    log('AI Describe: No Gemini API key set. Open Advanced Settings and enter your key.', 'error');
+                const provider = settings?.aiProvider ?? apiSettingsDefault.aiProvider;
+                if (provider === 'gemini' && !settings?.hasGeminiApiKey && !settings?.geminiApiKey) {
+                    log('AI Describe: No Gemini API key set. Open the extension hub and save your key.', 'error');
                     this.core.isProcessRunning = false;
                     return [false];
                 }
-                // Read the configured delay (default 4 000 ms = 15 RPM on free tier).
-                // Items that are skipped do NOT consume the delay — only real API calls do.
-                const delayMs = parseInt(String(settings?.geminiDelayMs ?? apiSettingsDefault.geminiDelayMs), 10) || 0;
-                // Check if item already has a description
+                if (provider === 'ollama' && (!settings?.ollamaBaseUrl || !settings?.ollamaModel)) {
+                    log('AI Describe: Ollama server URL and model are required. Open Advanced Settings and fetch/select a model.', 'error');
+                    this.core.isProcessRunning = false;
+                    return [false];
+                }
+                // Items that are skipped do not consume the delay; only real AI calls do.
+                const delaySetting = provider === 'ollama'
+                    ? settings?.ollamaDelayMs ?? apiSettingsDefault.ollamaDelayMs
+                    : settings?.geminiDelayMs ?? apiSettingsDefault.geminiDelayMs;
+                const delayMs = parseInt(String(delaySetting), 10) || 0;
+                // Check if item already has a description.
+                // Also use the authoritative dedupKey from this response — the one
+                // on the list-fetched item can be stale or undefined depending on source.
                 const itemInfoExt = await this.api.getItemInfoExt(item.mediaKey);
+                const dedupKey = itemInfoExt.dedupKey || item.dedupKey;
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 if (itemInfoExt.descriptionFull) {
                     return [false]; // Skip: already described — no delay needed
                 }
+                if (!dedupKey) {
+                    log(`AI Describe [${index}/${total}]: Could not resolve dedupKey for item ${item.mediaKey}, skipping`, 'error');
+                    return [false];
+                }
+                
+                log(`AI Describe [${index}/${total}]: Sending to ${provider}...`);
+                
                 // Build sized thumbnail URL (1024px max side, no watermark, no auth requirement).
                 // The -k-no suffix removes Google's auth requirement so the URL can be fetched
                 // without session cookies. Without it, the raw thumb URL returns 403.
                 if (!item.thumb) {
-                    log(`AI Describe: No thumbnail URL for item ${item.mediaKey}, skipping`, 'error');
+                    log(`AI Describe [${index}/${total}]: No thumbnail URL for item ${item.mediaKey}, skipping`, 'error');
                     return [false];
                 }
                 // Strip any existing size/flag params before appending our own
                 const thumbBase = item.thumb.includes('=') ? item.thumb.split('=')[0] : item.thumb;
                 const imageUrl = `${thumbBase}=w1024-h1024-k-no`;
-                // Call Gemini Vision
-                const description = await callGeminiVision(apiKey, imageUrl);
-                // Write description to Google Photos
-                await this.api.setItemDescription(item.dedupKey, description);
-                // ── Rate-limit guard ────────────────────────────────────────────────────
-                // Pause after each successful Gemini call to stay within the free-tier
-                // RPM cap. Only fires when we actually hit the API (skipped items above
-                // return early, so they don't count against the delay budget).
+                let description = await callAiDescription(settings, imageUrl);
+                
+                // Sanitize AI output: strip markdown formatting that Google Photos
+                // silently rejects (bold, italic, headers, bullet markers, etc.)
+                description = description
+                    .replace(/\*\*([^*]+)\*\*/g, '$1')   // **bold**
+                    .replace(/\*([^*]+)\*/g, '$1')        // *italic*
+                    .replace(/__([^_]+)__/g, '$1')        // __bold__
+                    .replace(/_([^_]+)_/g, '$1')          // _italic_
+                    .replace(/^#{1,6}\s+/gm, '')          // # headers
+                    .replace(/^[-*+]\s+/gm, '')           // - bullet points
+                    .replace(/^\d+\.\s+/gm, '')           // 1. numbered lists
+                    .replace(/`([^`]+)`/g, '$1')          // `code`
+                    .replace(/\n{3,}/g, '\n\n')           // collapse excess newlines
+                    .trim();
+                
+                const shortDesc = description.length > 60 ? description.substring(0, 60) + '...' : description;
+                log(`AI Describe [${index}/${total}]: Generated "${shortDesc}"`);
+                
+                // Write description to Google Photos using the authoritative dedupKey
+                await this.api.setItemDescription(dedupKey, description);
+                
+                // Verify the write actually persisted
+                const verifyInfo = await this.api.getItemInfoExt(item.mediaKey);
+                if (!verifyInfo.descriptionFull) {
+                    log(`AI Describe [${index}/${total}]: ⚠ Write may not have persisted — verify manually`, 'error');
+                } else {
+                    log(`AI Describe [${index}/${total}]: ✓ Saved`);
+                }
+                
                 if (delayMs > 0) {
                     await new Promise((resolve) => setTimeout(resolve, delayMs));
                 }
-                // ────────────────────────────────────────────────────────────────────────
                 return [true];
             }
             catch (error) {
                 console.error('Error in aiDescribeOneItem:', error);
-                log(`AI Describe error: ${String(error)}`, 'error');
+                log(`AI Describe [${index}/${total}] error: ${String(error)}`, 'error');
                 return [false];
             }
         }
         /**
-         * Generate AI descriptions for multiple media items using Gemini Vision.
+         * Generate AI descriptions for multiple media items.
          *
          * Items that already have a description are skipped. Processes one item
          * at a time (concurrency=1) and enforces a configurable delay between
-         * successful Gemini calls to stay within the free-tier 15 RPM cap.
-         * The delay is read from Advanced Settings > "Gemini Delay Between Calls (ms)"
-         * (default: 4 000 ms). Set to 0 to disable on paid tiers.
+         * successful provider calls.
          *
          * @param mediaItems - Array of media items to process.
          */
+        /**
+         * Clear descriptions from multiple media items.
+         *
+         * Processes one item at a time, setting descriptions to empty string.
+         * Items that have no description are skipped.
+         *
+         * @param mediaItems - Array of media items to process.
+         */
+        async clearDescriptions(mediaItems) {
+            log(`Clear Descriptions: Processing ${mediaItems.length} items`);
+            let cleared = 0;
+            let skipped = 0;
+
+            for (let i = 0; i < mediaItems.length; i++) {
+                if (!this.core.isProcessRunning) break;
+
+                try {
+                    const item = mediaItems[i];
+                    const itemInfoExt = await this.api.getItemInfoExt(item.mediaKey);
+                    if (!itemInfoExt.descriptionFull) {
+                        skipped++;
+                        continue;
+                    }
+                    log(`Clear Descriptions [${i + 1}/${mediaItems.length}]: Removing description...`);
+                    await this.api.setItemDescription(item.dedupKey, '');
+                    cleared++;
+                } catch (error) {
+                    log(`Clear Descriptions [${i + 1}/${mediaItems.length}] error: ${String(error)}`, 'error');
+                    skipped++;
+                }
+            }
+
+            log(`Clear Descriptions: Cleared ${cleared}, skipped ${skipped} (no description or error)`);
+        }
         async aiDescribeItems(mediaItems) {
             const settings = getFromStorage('apiSettings');
-            const delayMs = parseInt(String(settings?.geminiDelayMs ?? apiSettingsDefault.geminiDelayMs), 10) || 0;
-            log(`AI Describe: Processing up to ${mediaItems.length} items (delay: ${delayMs}ms between calls)`);
-            const results = await this.executeWithConcurrency(this.aiDescribeOneItem.bind(this), 1, mediaItems);
-            const described = results.filter(Boolean).length;
-            const skipped = mediaItems.length - described;
+            const provider = settings?.aiProvider ?? apiSettingsDefault.aiProvider;
+            const delaySetting = provider === 'ollama'
+                ? settings?.ollamaDelayMs ?? apiSettingsDefault.ollamaDelayMs
+                : settings?.geminiDelayMs ?? apiSettingsDefault.geminiDelayMs;
+            const delayMs = parseInt(String(delaySetting), 10) || 0;
+            log(`AI Describe: Processing up to ${mediaItems.length} items with ${provider} (delay: ${delayMs}ms between calls)`);
+            
+            let described = 0;
+            let skipped = 0;
+            
+            // Loop sequentially to ensure reliable API pacing and accurate progress logging
+            for (let i = 0; i < mediaItems.length; i++) {
+                if (!this.core.isProcessRunning) break;
+                
+                try {
+                    const [result] = await this.aiDescribeOneItem([mediaItems[i]], i + 1, mediaItems.length);
+                    if (result) {
+                        described++;
+                    } else {
+                        skipped++;
+                    }
+                } catch (error) {
+                    skipped++;
+                }
+            }
+            
             log(`AI Describe: Set ${described} descriptions, skipped ${skipped} (already described or error)`);
         }
         /**
@@ -3390,157 +3518,153 @@
                 }
                 catch (error) {
                     console.error('Error setting timestamps for chunk:', error);
-                    // Continue with next chunk
+                    throw error;
                 }
             }
             log(`Successfully set dates for ${successCount} of ${itemsToUpdate.length} items`);
         }
     }
-    /**
-     * Google Photos albums have a hard limit of 20,000 items.
-     * When the item count would exceed this, we split across
-     * sequentially numbered albums.
-     *
-     * @see https://developers.google.com/photos/library/guides/manage-albums#adding-items-to-album
-     * Fixes #2.
-     */
     ApiUtils.ALBUM_ITEM_LIMIT = 20_000;
 
-    function fileNameFilter(mediaItems, filter) {
-        log('Filtering by filename');
-        const regex = new RegExp(filter.fileNameRegex ?? '');
-        let result = mediaItems;
-        if (filter.fileNameMatchType === 'include')
-            result = mediaItems.filter((item) => regex.test(item.fileName ?? ''));
-        else if (filter.fileNameMatchType === 'exclude')
-            result = mediaItems.filter((item) => !regex.test(item.fileName ?? ''));
+    /**
+     * Helper to wrap filter logic with logging.
+     */
+    function _wrapFilter(name, mediaItems, filterFn) {
+        log(`Filtering by ${name}`);
+        const result = filterFn(mediaItems);
         log(`Item count after filtering: ${result.length}`);
         return result;
+    }
+
+    function fileNameFilter(mediaItems, filter) {
+        const regex = new RegExp(filter.fileNameRegex ?? '');
+        return _wrapFilter('filename', mediaItems, (items) => {
+            if (filter.fileNameMatchType === 'include')
+                return items.filter((item) => regex.test(item.fileName ?? ''));
+            if (filter.fileNameMatchType === 'exclude')
+                return items.filter((item) => !regex.test(item.fileName ?? ''));
+            return items;
+        });
     }
     function searchQueryFilter(mediaItems, filter) {
         if (!filter.searchQuery?.trim())
             return mediaItems;
-        log('Filtering by search query');
         const query = filter.searchQuery.toLowerCase();
-        const result = mediaItems.filter((item) => {
-            const fileName = (item.fileName ?? '').toLowerCase();
-            const description = (item.description ?? '').toLowerCase();
-            return fileName.includes(query) || description.includes(query);
-        });
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('search query', mediaItems, (items) =>
+            items.filter((item) => {
+                const fileName = (item.fileName ?? '').toLowerCase();
+                const description = (item.description ?? '').toLowerCase();
+                return fileName.includes(query) || description.includes(query);
+            })
+        );
     }
     function descriptionFilter(mediaItems, filter) {
-        log('Filtering by description');
         const regex = new RegExp(filter.descriptionRegex ?? '');
-        let result = mediaItems;
-        if (filter.descriptionMatchType === 'include')
-            result = mediaItems.filter((item) => regex.test(item.descriptionFull ?? ''));
-        else if (filter.descriptionMatchType === 'exclude')
-            result = mediaItems.filter((item) => !regex.test(item.descriptionFull ?? ''));
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('description', mediaItems, (items) => {
+            if (filter.descriptionMatchType === 'include')
+                return items.filter((item) => regex.test(item.descriptionFull ?? ''));
+            if (filter.descriptionMatchType === 'exclude')
+                return items.filter((item) => !regex.test(item.descriptionFull ?? ''));
+            return items;
+        });
+    }
+    function descriptionStatusFilter(mediaItems, filter) {
+        return _wrapFilter('description status', mediaItems, (items) => {
+            if (filter.descriptionStatus === 'has')
+                return items.filter((item) => !!String(item.descriptionFull ?? '').trim());
+            if (filter.descriptionStatus === 'missing')
+                return items.filter((item) => !String(item.descriptionFull ?? '').trim());
+            return items;
+        });
     }
     function sizeFilter(mediaItems, filter) {
-        log('Filtering by size');
-        let result = mediaItems;
-        if (parseInt(filter.higherBoundarySize ?? '0') > 0) {
-            result = result.filter((item) => (item.size ?? 0) < parseInt(filter.higherBoundarySize ?? '0'));
-        }
-        if (parseInt(filter.lowerBoundarySize ?? '0') > 0) {
-            result = result.filter((item) => (item.size ?? 0) > parseInt(filter.lowerBoundarySize ?? '0'));
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        const high = parseInt(filter.higherBoundarySize ?? '0');
+        const low = parseInt(filter.lowerBoundarySize ?? '0');
+        return _wrapFilter('size', mediaItems, (items) => {
+            let result = items;
+            if (high > 0)
+                result = result.filter((item) => (item.size ?? 0) < high);
+            if (low > 0)
+                result = result.filter((item) => (item.size ?? 0) > low);
+            return result;
+        });
     }
     function resolutionFilter(mediaItems, filter) {
-        log('Filtering by resolution');
-        let result = mediaItems;
         const minW = parseInt(filter.minWidth ?? '0');
         const maxW = parseInt(filter.maxWidth ?? '0');
         const minH = parseInt(filter.minHeight ?? '0');
         const maxH = parseInt(filter.maxHeight ?? '0');
-        if (minW > 0)
-            result = result.filter((item) => (item.resWidth ?? 0) >= minW);
-        if (maxW > 0)
-            result = result.filter((item) => (item.resWidth ?? 0) <= maxW);
-        if (minH > 0)
-            result = result.filter((item) => (item.resHeight ?? 0) >= minH);
-        if (maxH > 0)
-            result = result.filter((item) => (item.resHeight ?? 0) <= maxH);
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('resolution', mediaItems, (items) => {
+            let result = items;
+            if (minW > 0)
+                result = result.filter((item) => (item.resWidth ?? 0) >= minW);
+            if (maxW > 0)
+                result = result.filter((item) => (item.resWidth ?? 0) <= maxW);
+            if (minH > 0)
+                result = result.filter((item) => (item.resHeight ?? 0) >= minH);
+            if (maxH > 0)
+                result = result.filter((item) => (item.resHeight ?? 0) <= maxH);
+            return result;
+        });
     }
     function qualityFilter(mediaItems, filter) {
-        log('Filtering by quality');
-        let result = mediaItems;
-        if (filter.quality === 'original')
-            result = mediaItems.filter((item) => item.isOriginalQuality);
-        else if (filter.quality === 'storage-saver')
-            result = mediaItems.filter((item) => !item.isOriginalQuality);
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('quality', mediaItems, (items) => {
+            if (filter.quality === 'original')
+                return items.filter((item) => item.isOriginalQuality);
+            if (filter.quality === 'storage-saver')
+                return items.filter((item) => !item.isOriginalQuality);
+            return items;
+        });
     }
     function spaceFilter(mediaItems, filter) {
-        log('Filtering by space');
-        let result = mediaItems;
-        if (filter.space === 'consuming')
-            result = mediaItems.filter((item) => item.takesUpSpace);
-        else if (filter.space === 'non-consuming')
-            result = mediaItems.filter((item) => !item.takesUpSpace);
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('space', mediaItems, (items) => {
+            if (filter.space === 'consuming')
+                return items.filter((item) => item.takesUpSpace);
+            if (filter.space === 'non-consuming')
+                return items.filter((item) => !item.takesUpSpace);
+            return items;
+        });
     }
     function filterByDate(mediaItems, filter) {
-        log('Filtering by date');
-        let lowerBoundaryDate = new Date(filter.lowerBoundaryDate ?? '').getTime();
-        let higherBoundaryDate = new Date(filter.higherBoundaryDate ?? '').getTime();
-        lowerBoundaryDate = isNaN(lowerBoundaryDate) ? -Infinity : lowerBoundaryDate;
-        higherBoundaryDate = isNaN(higherBoundaryDate) ? Infinity : higherBoundaryDate;
-        let result = mediaItems;
-        if (filter.intervalType === 'include') {
-            if (filter.dateType === 'taken') {
-                result = mediaItems.filter((item) => item.timestamp >= lowerBoundaryDate && item.timestamp <= higherBoundaryDate);
+        const lower = new Date(filter.lowerBoundaryDate ?? '').getTime();
+        const higher = new Date(filter.higherBoundaryDate ?? '').getTime();
+        const start = isNaN(lower) ? -Infinity : lower;
+        const end = isNaN(higher) ? Infinity : higher;
+        return _wrapFilter('date', mediaItems, (items) => {
+            if (filter.intervalType === 'include') {
+                if (filter.dateType === 'taken')
+                    return items.filter((i) => i.timestamp >= start && i.timestamp <= end);
+                if (filter.dateType === 'uploaded')
+                    return items.filter((i) => i.creationTimestamp >= start && i.creationTimestamp <= end);
             }
-            else if (filter.dateType === 'uploaded') {
-                result = mediaItems.filter((item) => item.creationTimestamp >= lowerBoundaryDate && item.creationTimestamp <= higherBoundaryDate);
+            if (filter.intervalType === 'exclude') {
+                if (filter.dateType === 'taken')
+                    return items.filter((i) => i.timestamp < start || i.timestamp > end);
+                if (filter.dateType === 'uploaded')
+                    return items.filter((i) => i.creationTimestamp < start || i.creationTimestamp > end);
             }
-        }
-        else if (filter.intervalType === 'exclude') {
-            if (filter.dateType === 'taken') {
-                result = mediaItems.filter((item) => item.timestamp < lowerBoundaryDate || item.timestamp > higherBoundaryDate);
-            }
-            else if (filter.dateType === 'uploaded') {
-                result = mediaItems.filter((item) => item.creationTimestamp < lowerBoundaryDate || item.creationTimestamp > higherBoundaryDate);
-            }
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+            return items;
+        });
     }
     function filterByMediaType(mediaItems, filter) {
-        // if has duration - video, else image
-        log('Filtering by media type');
-        let result = mediaItems;
-        if (filter.type === 'video')
-            result = mediaItems.filter((item) => item.duration);
-        else if (filter.type === 'image')
-            result = mediaItems.filter((item) => !item.duration);
-        else if (filter.type === 'live')
-            result = mediaItems.filter((item) => item.isLivePhoto);
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('media type', mediaItems, (items) => {
+            if (filter.type === 'video')
+                return items.filter((item) => item.duration);
+            if (filter.type === 'image')
+                return items.filter((item) => !item.duration);
+            if (filter.type === 'live')
+                return items.filter((item) => item.isLivePhoto);
+            return items;
+        });
     }
     function filterFavorite(mediaItems, filter) {
-        log('Filtering favorites');
-        let result = mediaItems;
-        if (filter.favorite === 'true') {
-            result = mediaItems.filter((item) => item.isFavorite !== false);
-        }
-        else if (filter.favorite === 'false' || filter.excludeFavorites) {
-            result = mediaItems.filter((item) => item.isFavorite !== true);
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('favorites', mediaItems, (items) => {
+            if (filter.favorite === 'true')
+                return items.filter((item) => item.isFavorite !== false);
+            if (filter.favorite === 'false' || filter.excludeFavorites)
+                return items.filter((item) => item.isFavorite !== true);
+            return items;
+        });
     }
     // Coordinates from Google's API are in microdegrees (×10⁷).
     // Convert to decimal degrees for comparison.
@@ -3549,77 +3673,58 @@
         return Math.abs(microDeg) > 360 ? microDeg / 1e7 : microDeg;
     }
     function filterByLocation(mediaItems, filter) {
-        log('Filtering by location');
-        let result = mediaItems;
-        if (filter.hasLocation === 'true') {
-            result = result.filter((item) => item.geoLocation?.coordinates?.length);
-        }
-        else if (filter.hasLocation === 'false') {
-            result = result.filter((item) => !item.geoLocation?.coordinates?.length);
-        }
-        // Bounding box filter
         const south = parseFloat(filter.boundSouth ?? '');
         const west = parseFloat(filter.boundWest ?? '');
         const north = parseFloat(filter.boundNorth ?? '');
         const east = parseFloat(filter.boundEast ?? '');
         const hasBounds = !isNaN(south) && !isNaN(west) && !isNaN(north) && !isNaN(east);
-        if (hasBounds) {
-            log(`Filtering by bounding box: S${south} W${west} N${north} E${east}`);
-            result = result.filter((item) => {
-                const coords = item.geoLocation?.coordinates;
-                if (!coords?.length)
-                    return false;
-                const lat = toDecimalDegrees(coords[0]);
-                const lng = toDecimalDegrees(coords[1]);
-                if (lat < south || lat > north)
-                    return false;
-                // Handle boxes that cross the antimeridian (west > east)
-                if (west <= east) {
-                    return lng >= west && lng <= east;
-                }
-                else {
-                    return lng >= west || lng <= east;
-                }
-            });
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('location', mediaItems, (items) => {
+            let result = items;
+            if (filter.hasLocation === 'true')
+                result = result.filter((item) => item.geoLocation?.coordinates?.length);
+            else if (filter.hasLocation === 'false')
+                result = result.filter((item) => !item.geoLocation?.coordinates?.length);
+            if (hasBounds) {
+                result = result.filter((item) => {
+                    const coords = item.geoLocation?.coordinates;
+                    if (!coords?.length)
+                        return false;
+                    const lat = toDecimalDegrees(coords[0]);
+                    const lng = toDecimalDegrees(coords[1]);
+                    if (lat < south || lat > north)
+                        return false;
+                    return west <= east ? lng >= west && lng <= east : lng >= west || lng <= east;
+                });
+            }
+            return result;
+        });
     }
     function filterOwned(mediaItems, filter) {
-        log('Filtering owned');
-        let result = mediaItems;
-        if (filter.owned === 'true') {
-            result = mediaItems.filter((item) => item.isOwned !== false);
-        }
-        else if (filter.owned === 'false') {
-            result = mediaItems.filter((item) => item.isOwned !== true);
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('owned', mediaItems, (items) => {
+            if (filter.owned === 'true')
+                return items.filter((item) => item.isOwned !== false);
+            if (filter.owned === 'false')
+                return items.filter((item) => item.isOwned !== true);
+            return items;
+        });
     }
     function filterByUploadStatus(mediaItems, filter) {
-        log('Filtering by upload status');
-        let result = mediaItems;
-        if (filter.uploadStatus === 'full') {
-            result = mediaItems.filter((item) => item.isPartialUpload === false);
-        }
-        else if (filter.uploadStatus === 'partial') {
-            result = mediaItems.filter((item) => item.isPartialUpload === true);
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('upload status', mediaItems, (items) => {
+            if (filter.uploadStatus === 'full')
+                return items.filter((item) => item.isPartialUpload === false);
+            if (filter.uploadStatus === 'partial')
+                return items.filter((item) => item.isPartialUpload === true);
+            return items;
+        });
     }
     function filterArchived(mediaItems, filter) {
-        log('Filtering archived');
-        let result = mediaItems;
-        if (filter.archived === 'true') {
-            result = mediaItems.filter((item) => item.isArchived !== false);
-        }
-        else if (filter.archived === 'false') {
-            result = mediaItems.filter((item) => item.isArchived !== true);
-        }
-        log(`Item count after filtering: ${result.length}`);
-        return result;
+        return _wrapFilter('archived', mediaItems, (items) => {
+            if (filter.archived === 'true')
+                return items.filter((item) => item.isArchived !== false);
+            if (filter.archived === 'false')
+                return items.filter((item) => item.isArchived !== true);
+            return items;
+        });
     }
     // Process images in batches with yield points
     async function processBatch(items, processFn, batchSize = 5, core) {
@@ -3861,11 +3966,6 @@
                         throw new Error('No target album specified');
                     await this.apiUtils.addToExistingAlbum(p.mediaItems, p.targetAlbum, p.preserveOrder);
                 },
-                toNewAlbum: async (p) => {
-                    if (!p.newTargetAlbumName)
-                        throw new Error('No album name specified');
-                    await this.apiUtils.addToNewAlbum(p.mediaItems, p.newTargetAlbumName, p.preserveOrder);
-                },
                 toArchive: async (p) => this.apiUtils.sendToArchive(p.mediaItems),
                 unArchive: async (p) => this.apiUtils.unArchive(p.mediaItems),
                 toFavorite: async (p) => this.apiUtils.setAsFavorite(p.mediaItems),
@@ -3873,6 +3973,7 @@
                 copyDescFromOther: async (p) => this.apiUtils.copyDescriptionFromOther(p.mediaItems),
                 setDateFromFilename: async (p) => this.apiUtils.setTimestampFromFilename(p.mediaItems),
                 aiDescribe: async (p) => this.apiUtils.aiDescribeItems(p.mediaItems),
+                clearDescriptions: async (p) => this.apiUtils.clearDescriptions(p.mediaItems),
             };
         }
         /**
@@ -4017,11 +4118,12 @@
             }
             // Apply filters based on extended media info
             if (filteredItems.length &&
-                (filter.space ?? filter.quality ?? filter.lowerBoundarySize ?? filter.higherBoundarySize ?? filter.fileNameRegex ?? filter.descriptionRegex)) {
+                (filter.space ?? filter.quality ?? filter.lowerBoundarySize ?? filter.higherBoundarySize ?? filter.fileNameRegex ?? filter.descriptionRegex ?? filter.descriptionStatus)) {
                 filteredItems = await this.extendMediaItemsWithMediaInfo(filteredItems);
                 const extendedFilters = [
                     { condition: !!filter.fileNameRegex, method: () => fileNameFilter(filteredItems, filter) },
                     { condition: !!filter.descriptionRegex, method: () => descriptionFilter(filteredItems, filter) },
+                    { condition: !!filter.descriptionStatus, method: () => descriptionStatusFilter(filteredItems, filter) },
                     { condition: (source !== 'search' && !!filter.searchQuery), method: () => searchQueryFilter(filteredItems, filter) },
                     { condition: !!filter.space, method: () => spaceFilter(filteredItems, filter) },
                     { condition: !!filter.quality, method: () => qualityFilter(filteredItems, filter) },
@@ -4370,6 +4472,7 @@
             setDisabled('unLock', !isActiveTab('lockedFolder'));
             setDisabled('copyDescFromOther', isActiveTab('trash'));
             setDisabled('aiDescribe', isActiveTab('trash') || isActiveTab('library'));
+            setDisabled('clearDescriptions', isActiveTab('trash') || isActiveTab('library'));
         }
         function updateFilterVisibility() {
             const filterElements = {
@@ -4510,8 +4613,8 @@
         }
     }
 
-    const version = "v3.0.0";
-    const homepage = "https://github.com/xob0t/Google-Photos-Toolkit#readme";
+    const version = "v4.5.0";
+    const homepage = "https://github.com/tvcnet/gptk#readme";
     function htmlTemplatePrep(template) {
         return template.replace('%version%', version).replace('%homepage%', homepage);
     }
@@ -4520,6 +4623,29 @@
         window.__gptkUiRefreshTimer = window.setTimeout(() => {
             insertUi();
         }, delay);
+    }
+    function removeToolbarTooltip() {
+        document.getElementById('gptk-toolbar-tooltip')?.remove();
+    }
+    function showToolbarTooltip(btnElement) {
+        const tooltipText = btnElement?.getAttribute('data-tooltip') || btnElement?.getAttribute('title') || btnElement?.getAttribute('aria-label');
+        if (!btnElement || !tooltipText) {
+            return;
+        }
+        removeToolbarTooltip();
+        const tooltip = document.createElement('div');
+        tooltip.id = 'gptk-toolbar-tooltip';
+        tooltip.className = 'gptk-toolbar-tooltip';
+        tooltip.textContent = tooltipText;
+        document.body.appendChild(tooltip);
+        const rect = btnElement.getBoundingClientRect();
+        const top = rect.bottom + 8;
+        const left = rect.left + rect.width / 2;
+        tooltip.style.top = `${top}px`;
+        tooltip.style.left = `${left}px`;
+        requestAnimationFrame(() => {
+            tooltip.classList.add('is-visible');
+        });
     }
     function bindGptkButton(btnElement) {
         if (!btnElement || btnElement.dataset.gptkBound === '1')
@@ -4537,6 +4663,10 @@
             }
             showMainMenu();
         };
+        btnElement.addEventListener('mouseenter', () => showToolbarTooltip(btnElement));
+        btnElement.addEventListener('focus', () => showToolbarTooltip(btnElement));
+        btnElement.addEventListener('mouseleave', removeToolbarTooltip);
+        btnElement.addEventListener('blur', removeToolbarTooltip);
         btnElement.addEventListener('click', openHandler, true);
         btnElement.addEventListener('pointerdown', openHandler, true);
         btnElement.addEventListener('mousedown', openHandler, true);
@@ -4559,10 +4689,10 @@
         btnElement.style.padding = '0';
         btnElement.style.position = 'relative';
         btnElement.style.top = '0';
-        btnElement.style.minWidth = '48px';
-        btnElement.style.minHeight = '48px';
-        btnElement.style.height = '48px';
-        btnElement.style.width = '48px';
+        btnElement.style.minWidth = '40px';
+        btnElement.style.minHeight = '40px';
+        btnElement.style.height = '40px';
+        btnElement.style.width = '40px';
 
         const outerSpan = btnElement.querySelector('.MhXXcc.oJeWuf');
         if (outerSpan instanceof HTMLElement) {
@@ -4572,6 +4702,7 @@
             outerSpan.style.height = '24px';
             outerSpan.style.width = '24px';
             outerSpan.style.lineHeight = '0';
+            outerSpan.style.transform = 'translateY(-7px)';
         }
 
         const innerSpan = btnElement.querySelector('.Lw7GHd.snByac');
@@ -4592,8 +4723,32 @@
         const svg = btnElement.querySelector('svg');
         if (svg instanceof SVGElement) {
             svg.style.display = 'block';
-            svg.style.transform = 'translateY(-1px)';
+            svg.style.transform = 'none';
         }
+    }
+    function normalizeToolbarWrapperLayout(wrapper) {
+        if (!(wrapper instanceof HTMLElement))
+            return;
+        wrapper.className = 'gptk-toolbar-wrapper';
+        wrapper.style.display = 'inline-flex';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.alignSelf = 'center';
+        wrapper.style.flex = '0 0 40px';
+        wrapper.style.width = '40px';
+        wrapper.style.minWidth = '40px';
+        wrapper.style.maxWidth = '40px';
+        wrapper.style.height = '40px';
+        wrapper.style.minHeight = '40px';
+        wrapper.style.maxHeight = '40px';
+        wrapper.style.lineHeight = '0';
+        wrapper.style.verticalAlign = 'middle';
+        wrapper.style.boxSizing = 'border-box';
+        wrapper.style.margin = '0';
+        wrapper.style.padding = '0';
+        wrapper.style.position = 'relative';
+        wrapper.style.top = '0';
+        wrapper.style.contain = 'layout style';
     }
     function cleanupToolbarButtonArtifacts() {
         document.querySelectorAll('[data-gptk-wrapper="1"]').forEach((wrapper) => {
@@ -4601,12 +4756,7 @@
                 wrapper.remove();
             }
         });
-        document.querySelectorAll('[data-gptk-spacer="1"]').forEach((spacer) => {
-            const previous = spacer.previousElementSibling;
-            if (!(previous instanceof HTMLElement) || previous.getAttribute('data-gptk-wrapper') !== '1') {
-                spacer.remove();
-            }
-        });
+        document.querySelectorAll('[data-gptk-spacer="1"]').forEach((spacer) => spacer.remove());
 
         const existingButton = document.getElementById('gptk-button');
         if (!(existingButton instanceof HTMLElement)) {
@@ -4622,6 +4772,10 @@
     function insertUi() {
         cleanupToolbarButtonArtifacts();
         let btnElement = document.getElementById('gptk-button');
+        const existingWrapper = btnElement?.closest('[data-gptk-wrapper="1"]');
+        if (existingWrapper instanceof HTMLElement) {
+            normalizeToolbarWrapperLayout(existingWrapper);
+        }
         if (!btnElement) {
             // ── 1. Build the GPTK Button 100% via createElement (bypasses Trusted Types) ──
             btnElement = document.createElement('button');
@@ -4633,6 +4787,7 @@
             btnElement.setAttribute('aria-disabled', 'false');
             btnElement.setAttribute('tabindex', '0');
             btnElement.setAttribute('data-tooltip', 'Google Photos Toolkit');
+            btnElement.setAttribute('title', 'Google Photos Toolkit');
             btnElement.setAttribute('aria-haspopup', 'true');
             btnElement.setAttribute('aria-expanded', 'false');
             btnElement.style.transition = 'opacity 0.15s ease';
@@ -4707,35 +4862,34 @@
                 const targetWrapper = target.closest('div[jscontroller="ZvHseb"]');
                 if (targetWrapper?.parentElement) {
                     const wrapper = document.createElement('div');
-                    wrapper.className = targetWrapper.className;
                     wrapper.setAttribute('data-gptk-wrapper', '1');
+                    normalizeToolbarWrapperLayout(wrapper);
 
                     const slot = document.createElement('div');
                     slot.setAttribute('jsname', 'WjL7X');
                     slot.setAttribute('jsslot', '');
+                    slot.style.display = 'inline-flex';
+                    slot.style.alignItems = 'center';
+                    slot.style.justifyContent = 'center';
+                    slot.style.width = '40px';
+                    slot.style.height = '40px';
+                    slot.style.lineHeight = '0';
 
                     const tooltipWrapper = document.createElement('span');
                     tooltipWrapper.setAttribute('data-is-tooltip-wrapper', 'true');
                     tooltipWrapper.style.display = 'inline-flex';
                     tooltipWrapper.style.alignItems = 'center';
+                    tooltipWrapper.style.justifyContent = 'center';
                     tooltipWrapper.style.verticalAlign = 'middle';
+                    tooltipWrapper.style.width = '40px';
+                    tooltipWrapper.style.height = '40px';
+                    tooltipWrapper.style.lineHeight = '0';
                     tooltipWrapper.appendChild(btnElement);
 
                     slot.appendChild(tooltipWrapper);
                     wrapper.appendChild(slot);
 
-                    const overflowSlot = document.createElement('div');
-                    overflowSlot.setAttribute('jsname', 'U0exHf');
-                    overflowSlot.setAttribute('jsslot', '');
-                    wrapper.appendChild(overflowSlot);
-
-                    const spacer = document.createElement('div');
-                    spacer.className = 'oK50pe eLNT1d';
-                    spacer.setAttribute('aria-hidden', 'true');
-                    spacer.setAttribute('data-gptk-spacer', '1');
-
                     targetWrapper.insertAdjacentElement('beforebegin', wrapper);
-                    wrapper.insertAdjacentElement('afterend', spacer);
                 }
                 else {
                     let injectionPoint = target;
@@ -4959,11 +5113,17 @@
         }
         addAlbumsAsOptions(albums, Array.from(albumSelectsSingle), true);
         addAlbumsAsOptions(albums, Array.from(albumSelectsMultiple), false);
+        if (autoSelectCurrentAlbum()) {
+            const includeDetails = document.querySelector('.include-albums');
+            if (includeDetails instanceof HTMLDetailsElement) {
+                includeDetails.open = true;
+            }
+        }
+        updateUI();
     }
 
     const actions = [
         { elementId: 'toExistingAlbum', targetId: 'existingAlbum' },
-        { elementId: 'toNewAlbum', targetId: 'newAlbumName' },
         { elementId: 'toTrash' },
         { elementId: 'restoreTrash' },
         { elementId: 'toArchive' },
@@ -4975,10 +5135,12 @@
         { elementId: 'copyDescFromOther' },
         { elementId: 'setDateFromFilename' },
         { elementId: 'aiDescribe' },
+        { elementId: 'clearDescriptions' },
     ];
     // Actions that modify data irreversibly and require an extra warning
     const destructiveActions = {
         setDateFromFilename: 'WARNING: This will overwrite the original photo dates. This action cannot be undone!',
+        clearDescriptions: 'WARNING: This will permanently remove all descriptions from the filtered photos. This action cannot be undone!',
     };
     function userConfirmation(action, filter) {
         function generateWarning(action, filter) {
@@ -5104,7 +5266,24 @@
         // Parsed filter object
         const filter = getFormData('.filters-form');
         // Parsed settings object
-        const apiSettings = getFormData('.settings-form');
+        const apiSettings = normalizeExtensionSettings({
+            ...(getFromStorage('apiSettings') ?? {}),
+            ...getFormData('.settings-form', { includeEmpty: true }),
+        });
+
+        if (filter.albumOnlyDedupe === 'true') {
+            if (source !== 'albums') {
+                log('Album-only dedupe requires Source to be set to Albums.', 'error');
+                return;
+            }
+            if (!filter.albumsInclude) {
+                log('Album-only dedupe requires a target album selection.', 'error');
+                return;
+            }
+            if (!filter.similarityThreshold) {
+                filter.similarityThreshold = '0.95';
+            }
+        }
 
         // Safety: selected albums only constrain scope when Albums is the active source.
         // Refuse destructive actions if albums were selected while another source remains active.
@@ -5117,8 +5296,8 @@
         }
 
         // SAFETY: Limit AI Descriptions to targeted sources only (Albums, Search, Favorites)
-        if (actionId === 'aiDescribe' && source === 'library') {
-            log('AI Describe: Please select specific Albums or perform a Search first. Library-wide processing is disabled to prevent accidental usage.', 'error');
+        if ((actionId === 'aiDescribe' || actionId === 'clearDescriptions') && source === 'library') {
+            log(`${actionId === 'aiDescribe' ? 'AI Describe' : 'Clear Descriptions'}: Please select specific Albums or perform a Search first. Library-wide processing is disabled to prevent accidental usage.`, 'error');
             return;
         }
 
@@ -5139,31 +5318,20 @@
         showActionButtons();
     }
     function showExistingAlbumContainer() {
-        const actionButtons = document.querySelector('.action-buttons');
+        const actionButtons = document.querySelector('.action-categories');
         const existingContainer = document.querySelector('.to-existing-container');
         if (actionButtons)
             actionButtons.style.display = 'none';
         if (existingContainer)
             existingContainer.style.display = 'flex';
     }
-    function showNewAlbumContainer() {
-        const actionButtons = document.querySelector('.action-buttons');
-        const newContainer = document.querySelector('.to-new-container');
-        if (actionButtons)
-            actionButtons.style.display = 'none';
-        if (newContainer)
-            newContainer.style.display = 'flex';
-    }
     function showActionButtons() {
-        const actionButtons = document.querySelector('.action-buttons');
+        const actionButtons = document.querySelector('.action-categories');
         const existingContainer = document.querySelector('.to-existing-container');
-        const newContainer = document.querySelector('.to-new-container');
         if (actionButtons)
             actionButtons.style.display = 'flex';
         if (existingContainer)
             existingContainer.style.display = 'none';
-        if (newContainer)
-            newContainer.style.display = 'none';
     }
     function actionsListenersSetUp() {
         for (const action of actions) {
@@ -5185,8 +5353,6 @@
         }
         const showExistingAlbumForm = document.querySelector('#showExistingAlbumForm');
         showExistingAlbumForm?.addEventListener('click', showExistingAlbumContainer);
-        const showNewAlbumForm = document.querySelector('#showNewAlbumForm');
-        showNewAlbumForm?.addEventListener('click', showNewAlbumContainer);
         const returnButtons = document.querySelectorAll('.return');
         for (const button of returnButtons) {
             button?.addEventListener('click', showActionButtons);
@@ -5319,31 +5485,120 @@
         core.isProcessRunning = false;
     }
 
+    function updateAiProviderSettingsVisibility() {
+        const providerInput = document.querySelector('select[name="aiProvider"]');
+        const provider = providerInput?.value || apiSettingsDefault.aiProvider;
+        document.querySelectorAll('[data-ai-provider-section]').forEach((section) => {
+            if (!(section instanceof HTMLElement))
+                return;
+            const isActive = section.getAttribute('data-ai-provider-section') === provider;
+            section.style.display = isActive ? 'block' : 'none';
+            section.querySelectorAll('input, select, button').forEach((control) => {
+                if (control instanceof HTMLInputElement || control instanceof HTMLSelectElement || control instanceof HTMLButtonElement) {
+                    control.disabled = !isActive;
+                }
+            });
+        });
+    }
+
+    function populateOllamaModelOptions(models) {
+        const dataList = document.getElementById('ollamaModels');
+        if (!dataList)
+            return;
+        while (dataList.firstChild) {
+            dataList.firstChild.remove();
+        }
+        if (!models || models.length === 0) {
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "Fetch a model...";
+            dataList.appendChild(option);
+        } else {
+            for (const model of models) {
+                if (!model) continue;
+                const option = document.createElement('option');
+                option.value = String(model);
+                option.textContent = String(model);
+                dataList.appendChild(option);
+            }
+        }
+    }
+
     function advancedSettingsListenersSetUp() {
         const maxConcurrentSingleApiReqInput = document.querySelector('input[name="maxConcurrentSingleApiReq"]');
         const maxConcurrentBatchApiReqInput = document.querySelector('input[name="maxConcurrentBatchApiReq"]');
         const operationSizeInput = document.querySelector('input[name="operationSize"]');
         const lockedFolderOpSizeInput = document.querySelector('input[name="lockedFolderOpSize"]');
         const infoSizeInput = document.querySelector('input[name="infoSize"]');
-        const geminiApiKeyInput = document.querySelector('input[name="geminiApiKey"]');
+        const aiProviderInput = document.querySelector('select[name="aiProvider"]');
         const geminiDelayMsInput = document.querySelector('input[name="geminiDelayMs"]');
+        const ollamaBaseUrlInput = document.querySelector('select[name="ollamaBaseUrl"]');
+        const ollamaModelInput = document.querySelector('select[name="ollamaModel"]');
+        const ollamaDelayMsInput = document.querySelector('input[name="ollamaDelayMs"]');
+        const fetchOllamaModelsButton = document.querySelector('button[name="fetchOllamaModels"]');
         const defaultButton = document.querySelector('button[name="default"]');
         const settingsForm = document.querySelector('.settings-form');
         function saveApiSettings(event) {
             event.preventDefault();
-            const userInputSettings = getFormData('.settings-form');
+            const userInputSettings = {
+                ...getFromStorage('apiSettings'),
+                ...getFormData('.settings-form', { includeEmpty: true }),
+            };
             saveToStorage('apiSettings', userInputSettings);
             log('Api settings saved');
         }
-        function restoreApiDefaults() {
+        async function fetchAndStoreOllamaModels() {
+            const currentSettings = normalizeExtensionSettings({
+                ...getFromStorage('apiSettings'),
+                ...getFormData('.settings-form', { includeEmpty: true }),
+            });
+            try {
+                if (fetchOllamaModelsButton)
+                    fetchOllamaModelsButton.textContent = 'Fetching...';
+                const models = await fetchOllamaModels(currentSettings);
+                populateOllamaModelOptions(models);
+                saveToStorage('apiSettings', {
+                    ...currentSettings,
+                    ollamaModels: models,
+                    ollamaModel: currentSettings.ollamaModel || models[0] || '',
+                });
+                if (ollamaModelInput && !ollamaModelInput.value && models[0]) {
+                    ollamaModelInput.value = models[0];
+                }
+                log(`Ollama: Found ${models.length} models`);
+            }
+            catch (error) {
+                log(`Ollama model fetch failed: ${String(error)}`, 'error');
+            }
+            finally {
+                if (fetchOllamaModelsButton)
+                    fetchOllamaModelsButton.textContent = 'Fetch Models';
+            }
+        }
+        function restoreApiDefaults(event) {
+            event?.preventDefault();
             saveToStorage('apiSettings', apiSettingsDefault);
             maxConcurrentSingleApiReqInput.value = String(apiSettingsDefault.maxConcurrentSingleApiReq);
             maxConcurrentBatchApiReqInput.value = String(apiSettingsDefault.maxConcurrentBatchApiReq);
             operationSizeInput.value = String(apiSettingsDefault.operationSize);
             lockedFolderOpSizeInput.value = String(apiSettingsDefault.lockedFolderOpSize);
             infoSizeInput.value = String(apiSettingsDefault.infoSize);
-            if (geminiApiKeyInput) geminiApiKeyInput.value = apiSettingsDefault.geminiApiKey;
+            if (aiProviderInput) aiProviderInput.value = apiSettingsDefault.aiProvider;
             if (geminiDelayMsInput) geminiDelayMsInput.value = String(apiSettingsDefault.geminiDelayMs);
+            if (ollamaBaseUrlInput) ollamaBaseUrlInput.value = apiSettingsDefault.ollamaBaseUrl;
+            populateOllamaModelOptions(apiSettingsDefault.ollamaModels);
+            if (ollamaModelInput) {
+                const currentModel = apiSettingsDefault.ollamaModel;
+                if (currentModel && !(apiSettingsDefault.ollamaModels ?? []).includes(currentModel)) {
+                    const option = document.createElement('option');
+                    option.value = currentModel;
+                    option.textContent = currentModel;
+                    ollamaModelInput.appendChild(option);
+                }
+                ollamaModelInput.value = currentModel;
+            }
+            if (ollamaDelayMsInput) ollamaDelayMsInput.value = String(apiSettingsDefault.ollamaDelayMs);
+            updateAiProviderSettingsVisibility();
             log('Default api settings restored');
         }
         const restoredSettings = getFromStorage('apiSettings');
@@ -5354,10 +5609,17 @@
         operationSizeInput.value = String(restoredSettings?.operationSize ?? apiSettingsDefault.operationSize);
         lockedFolderOpSizeInput.value = String(restoredSettings?.lockedFolderOpSize ?? apiSettingsDefault.lockedFolderOpSize);
         infoSizeInput.value = String(restoredSettings?.infoSize ?? apiSettingsDefault.infoSize);
-        if (geminiApiKeyInput) geminiApiKeyInput.value = restoredSettings?.geminiApiKey ?? apiSettingsDefault.geminiApiKey;
+        if (aiProviderInput) aiProviderInput.value = restoredSettings?.aiProvider ?? apiSettingsDefault.aiProvider;
         if (geminiDelayMsInput) geminiDelayMsInput.value = String(restoredSettings?.geminiDelayMs ?? apiSettingsDefault.geminiDelayMs);
+        if (ollamaBaseUrlInput) ollamaBaseUrlInput.value = restoredSettings?.ollamaBaseUrl ?? apiSettingsDefault.ollamaBaseUrl;
+        if (ollamaModelInput) ollamaModelInput.value = restoredSettings?.ollamaModel ?? apiSettingsDefault.ollamaModel;
+        if (ollamaDelayMsInput) ollamaDelayMsInput.value = String(restoredSettings?.ollamaDelayMs ?? apiSettingsDefault.ollamaDelayMs);
+        populateOllamaModelOptions(restoredSettings?.ollamaModels ?? apiSettingsDefault.ollamaModels);
+        updateAiProviderSettingsVisibility();
         // Add event listener for form submission
         settingsForm?.addEventListener('submit', saveApiSettings);
+        aiProviderInput?.addEventListener('change', updateAiProviderSettingsVisibility);
+        fetchOllamaModelsButton?.addEventListener('click', fetchAndStoreOllamaModels);
         // Add event listener for "Default" button click
         defaultButton?.addEventListener('click', restoreApiDefaults);
     }
@@ -5399,6 +5661,18 @@
         // Reset all filters button
         const filterResetButton = document.querySelector('#filterResetButton');
         filterResetButton?.addEventListener('click', resetAllFilters);
+        const albumOnlyDedupe = document.querySelector('input[name="albumOnlyDedupe"]');
+        albumOnlyDedupe?.addEventListener('change', () => {
+            if (albumOnlyDedupe instanceof HTMLInputElement && albumOnlyDedupe.checked) {
+                selectSource('albums');
+                autoSelectCurrentAlbum();
+                const thresholdInput = document.querySelector('input[name="similarityThreshold"]');
+                if (thresholdInput instanceof HTMLInputElement && !thresholdInput.value) {
+                    thresholdInput.value = '0.95';
+                }
+            }
+            updateUI();
+        });
         // Date reset button animation
         const dateResets = document.querySelectorAll('.date-reset');
         for (const reset of dateResets) {

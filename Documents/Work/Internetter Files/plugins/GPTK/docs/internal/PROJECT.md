@@ -1,4 +1,4 @@
-# Google Photos Toolkit (GPTK) v3.0.0
+# Google Photos Toolkit (GPTK) v4.5.0
 
 **Fork of:** [nicholasgasior/google-photos-deduper](https://github.com/nicholasgasior/google-photos-deduper)  
 **Our fork:** https://github.com/tvcnet/google-photos-dedupe-and-update  
@@ -15,7 +15,7 @@ GPTK is one Chrome extension bundle with two separate product surfaces:
    The original Google Photos Deduper workflow. This is the legacy engine and still handles duplicate scanning, grouping, trashing, restoring, and scan logs.
 
 2. **Update Photo Albums**
-   The newer GPTK workflow layered into the same extension. This currently centers on Gemini-powered AI descriptions for album photos, with Smart Albums and Metadata Cleanup presented as planned follow-on tools.
+   The newer GPTK workflow layered into the same extension. This currently centers on Gemini- or Ollama-powered AI descriptions for album photos, with Smart Albums and Metadata Cleanup presented as planned follow-on tools.
 
 The current notes should treat these as distinct services that happen to share one manifest, one extension install, and some bridge/runtime infrastructure.
 
@@ -44,7 +44,7 @@ This is the newer GPTK-specific addition.
 - Runtime style: dashboard setup card plus actions performed inside the injected Google Photos toolkit panel
 - Current maturity: partially integrated; AI Describe exists, but the broader service split is still clearer in UX than in internal wiring
 - **Note:** The in-page toolkit panel focuses exclusively on metadata and organizational tasks; bulk "Trash" and "Restore" actions have been removed to avoid redundancy with the legacy deduper service.
-- Gemini requirement: this is the only service that depends on a Gemini API key
+- AI provider requirement: this is the only service that depends on Gemini or local Ollama settings
 
 ## Shared Extension Infrastructure
 
@@ -73,7 +73,7 @@ gptk/
 - `tabs/app.a1d14322.js`
   Runs the original deduper dashboard application.
 - `tabs/dashboard.js`
-  Runs the custom logic for the Update Photo Albums card, especially Gemini key setup and card state transitions.
+  Runs the custom logic for the Update Photo Albums card, including Gemini key setup, Ollama-ready state handling, and card state transitions.
 
 ### Extension Bridge Layer
 
@@ -109,9 +109,10 @@ Implemented and materially usable:
 Implemented in part:
 
 - Gemini API key setup in dashboard card
-- bridge-based key handoff into Google Photos runtime
+- local Ollama model selection in the in-page Advanced Settings panel
+- bridge-based AI provider handoff into the extension service worker
 - `AI Describe` action inside the injected toolkit
-- Gemini 2.5 Flash-Lite caption generation
+- Gemini 2.5 Flash-Lite and local Ollama caption generation
 - description write-back to Google Photos
 
 Not yet a full standalone service:
@@ -132,9 +133,9 @@ The intended user flow is:
 
 1. Install the extension and open Google Photos.
 2. Click the GPTK icon in Google Photos, either from library or album view.
-3. Use **Scan for Duplicates** directly with no Gemini setup.
-4. Use **Update Photo Albums** only when Gemini-backed album work is needed.
-5. After Gemini setup, open the target album and use **AI Describe** from the in-page GPTK panel.
+3. Use **Scan for Duplicates** directly with no AI provider setup.
+4. Use **Update Photo Albums** only when AI-backed album work is needed.
+5. After Gemini or Ollama setup, open the target album and use **AI Describe** from the in-page GPTK panel.
 
 That distinction should remain explicit in project notes, reviews, and future planning.
 

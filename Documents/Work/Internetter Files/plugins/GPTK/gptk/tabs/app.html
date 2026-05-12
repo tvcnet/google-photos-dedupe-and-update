@@ -14,20 +14,19 @@
                 <h1 class="card-title">
                     <span style="font-size: 1.5rem;">📸</span> Scan for Duplicates
                 </h1>
-                <p class="card-subtitle">Local deduping engine v3.0.0</p>
+                <p class="card-subtitle">Local deduping engine v4.5.0</p>
             </div>
             <div id="__plasmo"></div>
         </div>
 
-        <!-- Card 2: Photo Album Info Update (New Gemini Feature) -->
+        <!-- Card 2: Photo Album Info Update -->
         <div class="card gptk-fade-up gptk-fade-up-d2" id="ai-card">
             <div class="card-header">
-                <h1 class="card-title" title="Unlock powerful AI capabilities for your Google Photos using Gemini">
+                <h1 class="card-title" title="Unlock AI album-description capabilities for your Google Photos">
                     <span style="font-size: 1.5rem;">✨</span> Update Photo Albums
-                    <span id="api-key-status-dot" class="gptk-status-dot" style="display:none;" title="Gemini API Key is active and secure"></span>
                 </h1>
                 <p class="card-subtitle" style="margin-top: 5px; line-height: 1.4;">
-                    Gemini setup applies only to Update Photo Albums. Scan for Duplicates works without it. After setup, open the album you want and use the 
+                    AI setup applies only to Update Photo Albums. Scan for Duplicates works without it. For Gemini, save your key here. For local Ollama, choose your model from Advanced Settings in the Google Photos panel. Then open the album you want and use the
                     <svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align: middle; fill: var(--sky-500); margin: 0 2px;"><g transform="translate(3.0, 3.95)"><path d="M6.838,11.784 L12.744,5.879 C13.916,6.484 15.311,6.372 16.207,5.477 C16.897,4.786 17.131,3.795 16.923,2.839 L15.401,4.358 L14.045,4.624 L12.404,2.999 L12.686,1.603 L14.195,0.113 C13.24,-0.095 12.248,0.136 11.557,0.827 C10.661,1.723 10.549,3.117 11.155,4.291 L5.249,10.197 C4.076,9.592 2.681,9.705 1.784,10.599 C1.096,11.29 0.862,12.281 1.069,13.236 L2.592,11.717 L3.947,11.452 L5.59,13.077 L5.306,14.473 L3.797,15.963 C4.752,16.17 5.744,15.94 6.434,15.249 C7.33,14.354 7.443,12.958 6.838,11.784 L6.838,11.784 Z"></path></g></svg>
                     icon in Google Photos.
                 </p>
@@ -36,10 +35,10 @@
             <!-- SETUP VIEW -->
             <div id="setup-view" class="view-container">
                 <div class="input-group">
-                    <label class="label" for="gemini-api-key" title="Provide your own Gemini API Key to enable AI features without any platform usage fees">Gemini API Key</label>
-                    <input type="password" id="gemini-api-key" class="input-field" placeholder="Paste your API key here..." title="Enter your Google Gemini API Key here. It will be stored securely in your browser's local storage and never sent to external servers.">
-                    <p style="font-size: 0.75rem; color: var(--sky-600); margin-top: 0.5rem;" title="Your privacy is prioritized. The key never leaves your local machine.">
-                        This key is only used for Update Photo Albums and is stored locally in the extension.
+                    <label class="label" for="gemini-api-key" title="Provide your own Gemini API Key to enable Gemini-based AI descriptions">Gemini API Key</label>
+                    <input type="password" id="gemini-api-key" class="input-field" placeholder="Paste your API key here..." title="Enter your Google Gemini API Key here. It will be stored in chrome.storage.local on this browser and only used by the extension service worker when you run AI descriptions with Gemini selected.">
+                    <p style="font-size: 0.75rem; color: var(--sky-600); margin-top: 0.5rem;" title="Gemini keys are stored in extension storage and are not exposed back to the Google Photos page.">
+                        Gemini keys are stored locally in extension storage. Local Ollama can be selected later from the in-page Advanced Settings panel.
                     </p>
                 </div>
                 <button id="save-settings" class="btn" title="Save your API key locally and unlock AI generation features">Save Gemini Key</button>
@@ -48,37 +47,25 @@
             <!-- FEATURES HUB VIEW -->
             <div id="features-view" class="view-container" style="display: none;">
                 <div class="feature-grid">
-                    <div class="feature-tile" id="feature-ai-describe" title="Click to open Google Photos and start generating AI descriptions for your albums">
-                        <div class="feature-icon">📝</div>
-                        <div class="feature-info">
-                            <div class="feature-name">AI Descriptions</div>
-                            <div class="feature-desc">Open albums, then caption photos with Gemini 2.5</div>
+                    <div class="feature-tile" id="feature-toolkit-launcher" title="Click to open Google Photos and launch the GPTK toolkit panel">
+                        <div class="feature-icon" style="font-size: 1.8rem;">
+                            <span id="api-key-status-dot" class="gptk-status-dot" style="display:none; width: 24px; height: 24px; margin: 0;" title="Update Photo Albums AI provider is configured"></span>
                         </div>
-                    </div>
-                    <div class="feature-tile disabled" title="Smart Albums: This feature is currently in development and not yet available">
-                        <div class="feature-icon">📂</div>
                         <div class="feature-info">
-                            <div class="feature-name">Smart Albums</div>
-                            <div class="feature-desc">Categorize by intent & content</div>
-                        </div>
-                    </div>
-                    <div class="feature-tile disabled" title="Metadata Cleanup: This feature is currently in development and not yet available">
-                        <div class="feature-icon">🧹</div>
-                        <div class="feature-info">
-                            <div class="feature-name">Metadata Cleanup</div>
-                            <div class="feature-desc">Fix dates & location tags</div>
+                            <div class="feature-name">Launch Toolkit</div>
+                            <div class="feature-desc">Access AI Descriptions, Smart Albums, and Metadata Cleanup tools</div>
                         </div>
                     </div>
                 </div>
                 <div class="quick-start">
                     <h4 title="Follow these steps to access the AI generation workflow">🚀 AI Descriptions Next Steps</h4>
-                    <p>1. Save your Gemini API key here. This does not affect Scan for Duplicates.</p>
+                    <p>1. For Gemini, save your API key here. For Ollama, choose your local model in the GPTK panel. Neither affects Scan for Duplicates.</p>
                     <p>2. Open a <a href="https://photos.google.com/albums" target="_blank" style="color: var(--sky-500); font-weight: 600; text-decoration: none;" title="Open your Google Photos albums in a new tab">Google Photos album</a>.</p>
                     <p>3. Click the <strong title="Look for the GPTK toolkit icon in Google Photos">GPTK</strong> icon in Google Photos to open the toolkit panel.</p>
                     <p>4. Select your album in Filters and click <strong title="Use the AI Describe action to generate metadata">"AI Describe"</strong>.</p>
                 </div>
 
-                <button id="clear-key" class="btn-outline" title="Remove your saved Gemini API Key and lock Update Photo Albums">Clear Gemini API Key</button>
+                <button id="clear-key" class="btn-outline" title="Remove your saved Gemini API Key. Ollama settings are managed from the GPTK panel.">Clear Gemini API Key</button>
             </div>
 
             <div id="status-msg" class="status-msg"></div>

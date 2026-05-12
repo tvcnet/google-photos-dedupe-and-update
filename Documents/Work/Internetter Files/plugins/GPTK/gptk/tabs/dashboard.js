@@ -8,6 +8,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveBtn = document.getElementById('save-settings');
     const statusMsg = document.getElementById('status-msg');
 
+    function isAlbumUpdateConfigured(settings = {}) {
+        if (settings.aiProvider === 'ollama') {
+            return Boolean(settings.ollamaBaseUrl && settings.ollamaModel);
+        }
+        return Boolean(settings.geminiApiKey);
+    }
+
     function getStoredSettings(callback) {
         if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(['apiSettings'], (result) => {
@@ -20,14 +27,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Load existing settings
     getStoredSettings((settings) => {
+        const configured = isAlbumUpdateConfigured(settings);
         if (settings.geminiApiKey) {
             apiKeyInput.value = settings.geminiApiKey;
-            renderState(true);
-            setStatusDot(true);
-        } else {
-            renderState(false);
-            setStatusDot(false);
         }
+        renderState(configured);
+        setStatusDot(configured);
     });
 
     saveBtn.addEventListener('click', () => {
@@ -41,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         getStoredSettings((storedSettings) => {
             const settings = {
                 ...storedSettings,
+                aiProvider: storedSettings.aiProvider || 'gemini',
                 geminiApiKey: apiKey,
                 lastUpdated: new Date().toISOString()
             };
@@ -65,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    document.getElementById('feature-ai-describe')?.addEventListener('click', () => {
+    document.getElementById('feature-toolkit-launcher')?.addEventListener('click', () => {
         window.open('https://photos.google.com/albums', '_blank');
     });
 
@@ -80,8 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
                 chrome.storage.local.set({ apiSettings: updatedSettings }, () => {
                     apiKeyInput.value = '';
-                    renderState(false);
-                    setStatusDot(false);
+                    const configured = isAlbumUpdateConfigured(updatedSettings);
+                    renderState(configured);
+                    setStatusDot(configured);
                     showStatus('Gemini API key cleared.', 'success');
                 });
             } else {

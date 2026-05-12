@@ -1,4 +1,22 @@
 const APP_ID = "GPD";
+const SECRET_SETTING_KEYS = ["geminiApiKey", "ollamaApiKey"];
+
+function sanitizeApiSettings(settings = {}) {
+  const sanitized = { ...settings };
+  sanitized.hasGeminiApiKey = Boolean(settings.geminiApiKey);
+  sanitized.hasOllamaApiKey = Boolean(settings.ollamaApiKey);
+  for (const key of SECRET_SETTING_KEYS) {
+    sanitized[key] = "";
+  }
+  return sanitized;
+}
+
+function stripDerivedSettings(settings = {}) {
+  const stripped = { ...settings };
+  delete stripped.hasGeminiApiKey;
+  delete stripped.hasOllamaApiKey;
+  return stripped;
+}
 
 function postToPage(action, data = {}) {
   window.postMessage(
@@ -29,16 +47,31 @@ window.addEventListener("message", (event) => {
   if (message.action === "gptkGetStorage") {
     chrome.storage.local.get(["apiSettings"], (result) => {
       postToPage("gptkStorageData", {
-        data: result.apiSettings || {}
+        data: sanitizeApiSettings(result.apiSettings || {})
       });
     });
     return;
   }
 
   if (message.action === "gptkSetStorage") {
-    chrome.storage.local.set({ apiSettings: message.data || {} }, () => {
-      postToPage("gptkStorageData", {
-        data: message.data || {}
+    chrome.storage.local.get(["apiSettings"], (result) => {
+      const current = result.apiSettings || {};
+      const incoming = stripDerivedSettings(message.data || {});
+      const nextSettings = {
+        ...current,
+        ...incoming
+      };
+      if (!message.clearSecrets) {
+        for (const key of SECRET_SETTING_KEYS) {
+          if (!incoming[key] && current[key]) {
+            nextSettings[key] = current[key];
+          }
+        }
+      }
+      chrome.storage.local.set({ apiSettings: nextSettings }, () => {
+        postToPage("gptkStorageData", {
+          data: sanitizeApiSettings(nextSettings)
+        });
       });
     });
     return;
@@ -50,6 +83,41 @@ window.addEventListener("message", (event) => {
         data: {}
       });
     });
+    return;
+  }
+
+  if (message.action === "gptkOllamaRequest") {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        postToPage("gptkOllamaResult", {
+          requestId: message.requestId,
+          error: chrome.runtime.lastError.message
+        });
+        return;
+      }
+      postToPage("gptkOllamaResult", {
+        requestId: message.requestId,
+        ...(response || { error: "No response from Ollama bridge" })
+      });
+    });
+    return;
+  }
+
+  if (message.action === "gptkAiDescribeRequest") {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        postToPage("gptkAiDescribeResult", {
+          requestId: message.requestId,
+          error: chrome.runtime.lastError.message
+        });
+        return;
+      }
+      postToPage("gptkAiDescribeResult", {
+        requestId: message.requestId,
+        ...(response || { error: "No response from AI bridge" })
+      });
+    });
+    return;
   }
 });
 
@@ -64,7 +132,7 @@ chrome.runtime.onMessage.addListener((message) => {
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local" || !changes.apiSettings) return;
   postToPage("gptkStorageData", {
-    data: changes.apiSettings.newValue || {}
+    data: sanitizeApiSettings(changes.apiSettings.newValue || {})
   });
 });
 

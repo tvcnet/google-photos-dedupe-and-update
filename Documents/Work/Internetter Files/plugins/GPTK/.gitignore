@@ -1,0 +1,9 @@
+.DS_Store
+gptk/.DS_Store
+*.log
+coverage/
+dist/
+build/
+node_modules/
+*.zip
+tvcnet-social-toolkit/
